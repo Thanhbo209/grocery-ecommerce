@@ -1,18 +1,16 @@
-import Navbar from "@/components/client/Navbar";
+import ClientLayout from "@/layouts/ClientLayout";
+import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <Navbar />
-
-      <main className="pt-16">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </main>
-    </>
+    <Routes>
+      <Route element={<ClientLayout />}>
+        <Route path="/" element={<HomePage />} />{" "}
+      </Route>
+      <Route path="/login" element={<Login />} />{" "}
+    </Routes>
   );
 }
 
