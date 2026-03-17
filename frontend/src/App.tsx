@@ -1,9 +1,17 @@
-import "./App.css";
+import Navbar from "@/components/client/Navbar";
+import Login from "@/pages/Login";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <h1 className="text-primary text-5xl">123</h1>
+      <Navbar />
+
+      <main className="pt-16">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </main>
     </>
   );
 }
