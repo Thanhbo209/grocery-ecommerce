@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
 
 export const connectDB = async (connectionString) => {
-  try {
-    if (!connectionString) {
-      console.log("Connection string error in .env");
-    }
-    await mongoose.connect(connectionString);
-    console.log("Connected Successfully");
-  } catch (err) {
-    console.log("Error while connecting...", err);
+  if (!connectionString) {
+    throw new Error("MONGO_URI environment variable is required");
   }
+  await mongoose.connect(connectionString);
+  console.log("Connected Successfully");
 };

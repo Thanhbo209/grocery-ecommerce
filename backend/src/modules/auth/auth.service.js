@@ -29,7 +29,8 @@ export class AuthService {
       role: user.role,
     });
 
-    return { user, token };
+    const { password: _, ...safeUser } = user.toObject();
+    return { user: safeUser, token };
   }
 
   async login(data) {
@@ -52,6 +53,7 @@ export class AuthService {
       role: user.role,
     });
 
-    return { user, token };
+    const { password: _, ...safeUser } = user.toObject();
+    return { user: safeUser, token };
   }
 }

@@ -7,7 +7,9 @@ export class AuthController {
   register = async (req, res, next) => {
     try {
       const result = await this.authService.register(req.body);
-      res.json(result);
+      // Coderabbit fixed
+      const { password, ...safeUser } = result.user.toObject();
+      res.status(201).json({ user: safeUser, token: result.token });
     } catch (err) {
       next(err);
     }
@@ -16,7 +18,9 @@ export class AuthController {
   login = async (req, res, next) => {
     try {
       const result = await this.authService.login(req.body);
-      res.json(result);
+      // Coderabbit fixed
+      const { password, ...safeUser } = result.user.toObject();
+      res.json({ user: safeUser, token: result.token });
     } catch (err) {
       next(err);
     }

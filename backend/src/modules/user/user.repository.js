@@ -6,7 +6,7 @@ export class UserRepository {
   }
 
   findById(id) {
-    return User.findById({ id });
+    return User.findById(id);
   }
 
   create(data) {

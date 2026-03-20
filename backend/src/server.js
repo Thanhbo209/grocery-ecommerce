@@ -36,7 +36,11 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", createAuthRouter(authController));
 
-app.listen(PORT, async () => {
+const startServer = async () => {
   await connectDB(connectionString);
-  console.log(`Server running on PORT ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server running on PORT ${PORT}`);
+  });
+};
+
+startServer();
