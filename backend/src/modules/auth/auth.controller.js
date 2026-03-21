@@ -19,8 +19,7 @@ export class AuthController {
     try {
       const result = await this.authService.login(req.body);
       // Coderabbit fixed
-      const { password, ...safeUser } = result.user.toObject();
-      res.json({ user: safeUser, token: result.token });
+      res.json(result); // done
     } catch (err) {
       next(err);
     }

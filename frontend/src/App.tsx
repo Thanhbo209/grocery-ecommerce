@@ -1,6 +1,6 @@
 import ClientLayout from "@/layouts/ClientLayout";
 import HomePage from "@/pages/HomePage";
-import Login from "@/pages/Login";
+import { LoginPage } from "@/pages/Login";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
       <Route element={<ClientLayout />}>
         <Route path="/" element={<HomePage />} />{" "}
       </Route>
-      <Route path="/login" element={<Login />} />{" "}
+      <Route path="/login" element={<LoginPage />} />{" "}
     </Routes>
   );
 }
