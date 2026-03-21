@@ -1,6 +1,5 @@
 import Logo from "@/assets/green-logo.png";
 import { useAuth } from "@/components/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,110 +15,262 @@ import {
   Search,
   Settings,
   LogOut,
+  Heart,
+  Bell,
+  ChevronDown,
+  MapPin,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [cartCount] = useState(3); // mock cart count
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-sidebar border-b backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
-        {/* LEFT */}
-        <div className="flex items-center gap-3">
-          <img src={Logo} alt="logo" className="w-10 h-10 object-cover" />
-          <p className="text-xl font-semibold text-primary">
-            Green<span className="text-chart-3">Cart</span>
-          </p>
-        </div>
-
-        {/* SEARCH (desktop only) */}
-        <div className="hidden md:flex flex-1 max-w-xl mx-6 relative">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input placeholder="Tìm kiếm sản phẩm..." className="pl-10" />
-        </div>
-
-        {/* RIGHT */}
-        <div className="flex items-center gap-4">
-          {/* account */}
-          {user ? (
-            <div className="hidden md:flex items-center">
-              <DropdownMenu>
-                {/* Trigger */}
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 px-2 py-1 rounded-lg  transition">
-                    <User2 size={20} className="text-primary" />
-                    <p className="text-xs font-medium  flex flex-col items-start">
-                      Xin chào
-                      <span className="text-xs font-medium text-primary">
-                        {user.name || user.email}
-                      </span>
-                    </p>
-                  </button>
-                </DropdownMenuTrigger>
-
-                {/* Dropdown */}
-                <DropdownMenuContent align="end" className="w-52 rounded-xl">
-                  {/* Info */}
-                  <div className="px-3 py-2 text-sm">
-                    <p className="font-medium">{user.name || "User"}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-
-                  <DropdownMenuSeparator />
-
-                  {/* Settings */}
-                  <DropdownMenuItem
-                    onClick={() => navigate("/profile")}
-                    className="cursor-pointer"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    Cài đặt người dùng
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
-                  {/* Logout */}
-                  <DropdownMenuItem
-                    onClick={logout}
-                    className="text-destructive focus:text-destructive cursor-pointer"
-                  >
-                    <LogOut className="mr-2 h-4 w-4 " />
-                    Đăng xuất
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          ) : (
-            <div className="hidden md:flex items-center gap-2">
-              <User2 size={20} className="text-primary" />
-              <div className="flex flex-col leading-none">
-                <p className="text-xs text-primary">Tài khoản</p>
-                <a href="/login" className="text-xs hover:underline">
-                  Đăng nhập
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* cart */}
-          <Button className="rounded-full p-3">
-            <ShoppingCart size={18} />
-            <p>Giỏ Hàng</p>
-          </Button>
-
-          {/* mobile menu */}
-          <button className="md:hidden">
-            <Menu size={22} />
-          </button>
+    <header className="fixed top-0 left-0 w-full z-50">
+      {/* Top bar */}
+      <div className="bg-primary text-primary-foreground text-xs py-1.5 px-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-1 text-primary-foreground/80">
+            <MapPin size={11} />
+            <span>Giao hàng toàn quốc · Miễn phí từ 299k</span>
+          </div>
+          <div className="hidden md:flex items-center gap-4 text-primary-foreground/80">
+            <a
+              href="#"
+              className="hover:text-primary-foreground transition-colors"
+            >
+              Chính sách đổi trả
+            </a>
+            <span>·</span>
+            <a
+              href="#"
+              className="hover:text-primary-foreground transition-colors"
+            >
+              Hỗ trợ khách hàng
+            </a>
+          </div>
         </div>
       </div>
-    </nav>
+
+      {/* Main navbar */}
+      <nav className="bg-background/95 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-4 h-16">
+            {/* LOGO */}
+            <a href="/" className="flex items-center gap-2.5 shrink-0 group">
+              <div className="relative">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden group-hover:bg-primary/20 transition-colors">
+                  <img
+                    src={Logo}
+                    alt="logo"
+                    className="w-7 h-7 object-contain"
+                  />
+                </div>
+              </div>
+              <span className="text-lg font-bold tracking-tight">
+                Green<span className="text-chart-3">Cart</span>
+              </span>
+            </a>
+
+            {/* SEARCH */}
+            <div className="flex-1 mx-2 hidden md:block">
+              <div
+                className={`relative flex items-center rounded-2xl border transition-all duration-200 ${
+                  searchFocused
+                    ? "border-primary shadow-[0_0_0_3px_hsl(var(--primary)/0.12)]"
+                    : "border-border bg-muted/40 hover:border-primary/40"
+                }`}
+              >
+                <Search
+                  size={16}
+                  className={`absolute left-3.5 transition-colors ${
+                    searchFocused ? "text-primary" : "text-muted-foreground"
+                  }`}
+                />
+                <Input
+                  placeholder="Tìm kiếm rau củ, trái cây, thực phẩm..."
+                  className="pl-10 pr-28 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-10"
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                />
+                <button className="absolute right-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-xl transition-colors">
+                  Tìm kiếm
+                </button>
+              </div>
+            </div>
+
+            {/* RIGHT ACTIONS */}
+            <div className="flex items-center gap-1 shrink-0">
+              {/* Wishlist */}
+              <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors relative group">
+                <Heart
+                  size={20}
+                  className="text-muted-foreground group-hover:text-rose-500 transition-colors"
+                />
+              </button>
+
+              {/* Notification */}
+              {user && (
+                <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors relative">
+                  <Bell size={20} className="text-muted-foreground" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-chart-3 rounded-full ring-2 ring-background" />
+                </button>
+              )}
+
+              {/* ACCOUNT */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
+                      <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
+                        <User2 size={15} className="text-primary" />
+                      </div>
+                      <div className="flex flex-col items-start leading-none">
+                        <span className="text-[10px] text-muted-foreground">
+                          Tài khoản
+                        </span>
+                        <span className="text-xs font-semibold text-foreground max-w-[80px] truncate">
+                          {user.name || user.email}
+                        </span>
+                      </div>
+                      <ChevronDown
+                        size={14}
+                        className="text-muted-foreground"
+                      />
+                    </button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 rounded-2xl shadow-xl border-border/60 p-1.5"
+                  >
+                    <div className="px-3 py-2.5 mb-1">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
+                          <User2 size={16} className="text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">
+                            {user.name || "Người dùng"}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <DropdownMenuSeparator className="my-1" />
+
+                    <DropdownMenuItem
+                      onClick={() => navigate("/profile")}
+                      className="cursor-pointer rounded-xl text-sm gap-2.5 py-2"
+                    >
+                      <Settings className="h-4 w-4 text-muted-foreground" />
+                      Cài đặt tài khoản
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator className="my-1" />
+
+                    <DropdownMenuItem
+                      onClick={logout}
+                      className="text-destructive focus:text-destructive cursor-pointer rounded-xl text-sm gap-2.5 py-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <a
+                  href="/login"
+                  className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center">
+                    <User2 size={15} className="text-muted-foreground" />
+                  </div>
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="text-[10px] text-muted-foreground">
+                      Chào mừng
+                    </span>
+                    <span className="text-xs font-semibold">Đăng nhập</span>
+                  </div>
+                </a>
+              )}
+
+              {/* CART */}
+              <button className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-2xl transition-all duration-150 active:scale-95 relative ml-1">
+                <div className="relative">
+                  <ShoppingCart size={18} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 min-w-[16px] h-4 bg-chart-3 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
+                      {cartCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-sm font-medium hidden sm:block">
+                  Giỏ hàng
+                </span>
+              </button>
+
+              {/* MOBILE MENU */}
+              <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors ml-1">
+                <Menu size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile search */}
+          <div className="md:hidden pb-3">
+            <div className="relative flex items-center rounded-2xl border border-border bg-muted/40">
+              <Search
+                size={15}
+                className="absolute left-3 text-muted-foreground"
+              />
+              <Input
+                placeholder="Tìm kiếm sản phẩm..."
+                className="pl-9 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-9"
+              />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Category nav */}
+      <div className="bg-background border-b shadow-2xl border-border/40 hidden md:block">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-1 h-10 overflow-x-auto scrollbar-hide">
+            {[
+              "Rau củ quả",
+              "Trái cây",
+              "Thịt tươi",
+              "Hải sản",
+              "Sữa & Trứng",
+              "Đồ khô",
+              "Thức uống",
+              "Đông lạnh",
+              "Hữu cơ",
+            ].map((cat, i) => (
+              <a
+                key={cat}
+                href="#"
+                className={`whitespace-nowrap px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
+                  i === 0
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {cat}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </header>
   );
 };
 
