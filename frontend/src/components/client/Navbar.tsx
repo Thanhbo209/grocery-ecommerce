@@ -54,9 +54,9 @@ const Navbar = () => {
                     <User2 size={20} className="text-primary" />
                     <p className="text-xs font-medium  flex flex-col items-start">
                       Xin chào
-                      <p className="text-xs font-medium text-primary">
+                      <span className="text-xs font-medium text-primary">
                         {user.name || user.email}
-                      </p>
+                      </span>
                     </p>
                   </button>
                 </DropdownMenuTrigger>

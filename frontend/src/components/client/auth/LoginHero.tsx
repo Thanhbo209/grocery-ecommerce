@@ -13,8 +13,11 @@ export function LoginHero() {
       <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/5" />
       <div className="absolute -bottom-24 -left-12 h-72 w-72 rounded-full bg-white/5" />
 
-      <div className="absolute top-8 left-12 h-72 w-72 rounded-full z-50 text-white cursor-pointer">
-        <a href="/" className="flex gap-1 text-xs items-center hover:underline">
+      <div className="absolute left-12 top-8 z-50 text-white">
+        <a
+          href="/"
+          className="inline-flex items-center gap-1 text-xs hover:underline"
+        >
           <ArrowLeft />
           Quay về trang chủ
         </a>

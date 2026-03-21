@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+
 const userSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
@@ -34,11 +36,7 @@ export function LoginForm() {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        data,
-      );
-      console.log("Login success:", res.data);
+      const res = await axios.post(`${VITE_API_URL}/api/auth/login`, data);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       window.location.href = "/";
@@ -107,7 +105,11 @@ export function LoginForm() {
         {/* Password */}
         <div className="space-y-1.5">
           <Label htmlFor="password">Mật khẩu</Label>
-          <PasswordInput placeholder="••••••••" {...register("password")} />
+          <PasswordInput
+            id="password"
+            placeholder="••••••••"
+            {...register("password")}
+          />
           {errors.password && (
             <p className="text-red-500 text-xs">{errors.password.message}</p>
           )}

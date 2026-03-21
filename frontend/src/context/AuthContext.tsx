@@ -16,10 +16,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
+    if (!storedUser || !storedToken) return;
+
+    try {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
+    } catch {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
   }, []);
 

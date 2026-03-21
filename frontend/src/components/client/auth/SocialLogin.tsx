@@ -30,11 +30,11 @@ const FacebookIcon = () => (
 export function SocialLogin() {
   return (
     <div className="grid grid-cols-2 gap-3">
-      <Button variant="social" className="h-11 gap-2.5">
+      <Button type="button" variant="social" className="h-11 gap-2.5">
         <GoogleIcon />
         <span>Google</span>
       </Button>
-      <Button variant="social" className="h-11 gap-2.5">
+      <Button type="button" variant="social" className="h-11 gap-2.5">
         <FacebookIcon />
         <span>Facebook</span>
       </Button>
