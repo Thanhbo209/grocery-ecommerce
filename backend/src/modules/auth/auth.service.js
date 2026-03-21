@@ -54,6 +54,14 @@ export class AuthService {
     });
 
     const { password: _, ...safeUser } = user.toObject();
-    return { user: safeUser, token };
+    return {
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+      token,
+    };
   }
 }

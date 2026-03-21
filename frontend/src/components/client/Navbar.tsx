@@ -1,9 +1,27 @@
 import Logo from "@/assets/green-logo.png";
+import { useAuth } from "@/components/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, User2, Menu, Search } from "lucide-react";
+import {
+  ShoppingCart,
+  User2,
+  Menu,
+  Search,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-sidebar border-b backdrop-blur-xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
@@ -27,15 +45,67 @@ const Navbar = () => {
         {/* RIGHT */}
         <div className="flex items-center gap-4">
           {/* account */}
-          <div className="hidden md:flex items-center gap-2">
-            <User2 size={20} className="text-green-600" />
-            <div className="flex flex-col leading-none">
-              <p className="text-xs text-primary">Tài khoản</p>
-              <a href="/login" className="text-xs hover:underline">
-                Đăng nhập
-              </a>
+          {user ? (
+            <div className="hidden md:flex items-center">
+              <DropdownMenu>
+                {/* Trigger */}
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 px-2 py-1 rounded-lg  transition">
+                    <User2 size={20} className="text-primary" />
+                    <p className="text-xs font-medium  flex flex-col items-start">
+                      Xin chào
+                      <span className="text-xs font-medium text-primary">
+                        {user.name || user.email}
+                      </span>
+                    </p>
+                  </button>
+                </DropdownMenuTrigger>
+
+                {/* Dropdown */}
+                <DropdownMenuContent align="end" className="w-52 rounded-xl">
+                  {/* Info */}
+                  <div className="px-3 py-2 text-sm">
+                    <p className="font-medium">{user.name || "User"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Settings */}
+                  <DropdownMenuItem
+                    onClick={() => navigate("/profile")}
+                    className="cursor-pointer"
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Cài đặt người dùng
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Logout */}
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4 " />
+                    Đăng xuất
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-          </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-2">
+              <User2 size={20} className="text-primary" />
+              <div className="flex flex-col leading-none">
+                <p className="text-xs text-primary">Tài khoản</p>
+                <a href="/login" className="text-xs hover:underline">
+                  Đăng nhập
+                </a>
+              </div>
+            </div>
+          )}
 
           {/* cart */}
           <Button className="rounded-full p-3">
