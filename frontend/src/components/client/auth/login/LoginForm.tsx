@@ -38,7 +38,7 @@ export function LoginForm() {
       setLoading(true);
 
       const res = await axios.post(`${VITE_API_URL}/api/auth/login`, data);
-      toast.success("Đăng nhậpp thành công!");
+      toast.success("Đăng nhập thành công!");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setTimeout(() => {

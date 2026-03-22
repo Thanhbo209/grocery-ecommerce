@@ -9,7 +9,7 @@ export class AuthController {
       const result = await this.authService.register(req.body);
       // Coderabbit fixed
       res.json(result); // done
-      res.status(201).json({ user: safeUser, token: result.token });
+      res.status(201).json(result);
     } catch (err) {
       next(err);
     }
@@ -19,7 +19,7 @@ export class AuthController {
     try {
       const result = await this.authService.login(req.body);
       // Coderabbit fixed
-      res.json(result); // done
+      res.status(201).json(result);
     } catch (err) {
       next(err);
     }
