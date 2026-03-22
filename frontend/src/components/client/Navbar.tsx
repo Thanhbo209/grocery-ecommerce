@@ -125,7 +125,7 @@ const Navbar = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
+                    <button className="hidden md:flex items-center border border-primary gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
                       <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
                         <User2 size={15} className="text-primary" />
                       </div>
@@ -133,7 +133,7 @@ const Navbar = () => {
                         <span className="text-[10px] text-muted-foreground">
                           Tài khoản
                         </span>
-                        <span className="text-xs font-semibold text-foreground max-w-[80px] truncate">
+                        <span className="text-xs font-semibold text-foreground max-w-20 truncate">
                           {user.name || user.email}
                         </span>
                       </div>
@@ -157,7 +157,7 @@ const Navbar = () => {
                           <p className="text-sm font-semibold">
                             {user.name || "Người dùng"}
                           </p>
-                          <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+                          <p className="text-xs text-muted-foreground truncate max-w-37.5">
                             {user.email}
                           </p>
                         </div>

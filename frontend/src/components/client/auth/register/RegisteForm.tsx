@@ -1,27 +1,37 @@
 import { useState } from "react";
-import { Loader2, ArrowRight, Mail, ShoppingBag } from "lucide-react";
+import {
+  Loader2,
+  ArrowRight,
+  Mail,
+  ShoppingBag,
+  CaseSensitive,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { SocialLogin } from "./SocialLogin";
-import { PasswordInput } from "./PasswordInput";
+import { SocialLogin } from "@/components/client/auth/SocialLogin";
+import { PasswordInput } from "@/components/client/auth/PasswordInput";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { toast } from "sonner";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const userSchema = z.object({
+  name: z
+    .string()
+    .max(50)
+    .nonempty("Tên không được để trống, Vui lòng nhập tên"),
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
 });
 
 type UserFormData = z.infer<typeof userSchema>;
 
-export function LoginForm() {
+export function RegisterForm() {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -36,13 +46,16 @@ export function LoginForm() {
     try {
       setLoading(true);
 
-      const res = await axios.post(`${VITE_API_URL}/api/auth/login`, data);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      window.location.href = "/";
-    } catch (error: unknown) {
-      console.error("Login Failed: ", error);
-      alert(error || "Đăng nhập thất bại");
+      await axios.post(`${VITE_API_URL}/api/auth/register`, data);
+      toast.success("Đăng ký thành công!");
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1000);
+    } catch (error: any) {
+      console.error("Register Failed: ", error);
+      const message = error?.response?.data?.message || "Đăng ký thất bại";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -63,10 +76,10 @@ export function LoginForm() {
       {/* Heading */}
       <div className="mb-7">
         <h2 className="font-display mb-1.5 text-[1.75rem] font-bold text-foreground">
-          Chào mừng trở lại!
+          Đăng ký và mua sắm ngay!
         </h2>
         <p className="text-sm text-muted-foreground">
-          Đăng nhập để tiếp tục mua sắm và theo dõi đơn hàng của bạn.
+          Đăng ký để tiếp tục mua sắm và theo dõi đơn hàng của bạn.
         </p>
       </div>
 
@@ -77,13 +90,30 @@ export function LoginForm() {
       <div className="my-5 flex items-center gap-3">
         <Separator className="flex-1" />
         <span className="text-[11px] font-medium text-muted-foreground">
-          hoặc đăng nhập bằng email
+          hoặc đăng ký bằng email
         </span>
         <Separator className="flex-1" />
       </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Full Name */}
+        <div className="space-y-1.5">
+          <Label htmlFor="name">Họ & Tên</Label>
+          <div className="relative">
+            <CaseSensitive className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="fullname"
+              type="text"
+              placeholder="Nhập họ tên của bạn"
+              className="pl-9"
+              {...register("name")}
+            />
+          </div>
+          {errors.name && (
+            <p className="text-destructive text-xs">{errors.name.message}</p>
+          )}
+        </div>
         {/* Email */}
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
@@ -115,30 +145,16 @@ export function LoginForm() {
           )}
         </div>
 
-        {/* Remember me + Forgot */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Checkbox id="remember" />
-            <Label htmlFor="remember">Nhớ tài khoản</Label>
-          </div>
-          <a
-            href="#"
-            className="text-[13px] font-semibold text-primary transition-colors hover:text-primary/80 hover:underline"
-          >
-            Quên mật khẩu?
-          </a>
-        </div>
-
         {/* Submit */}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Đang đăng nhập...
+              Đang đăng ký...
             </>
           ) : (
             <>
-              Đăng nhập
+              Đăng ký
               <ArrowRight className="h-4 w-4" />
             </>
           )}
@@ -147,22 +163,22 @@ export function LoginForm() {
 
       {/* Register link */}
       <p className="mt-5 text-center text-sm text-muted-foreground">
-        Chưa có tài khoản?
+        Đã có tài khoản?{" "}
         <a
-          href="#"
+          href="/login"
           className="font-semibold text-primary transition-colors hover:underline"
         >
-          Đăng ký ngay
+          Đăng nhập ngay
         </a>
       </p>
 
       {/* ToS */}
       <p className="mt-7 text-center text-[11px] leading-relaxed text-muted-foreground">
-        Bằng cách đăng nhập, bạn đồng ý với
+        Bằng cách đăng ký, bạn đồng ý với{" "}
         <a href="#" className="underline hover:text-primary">
-          Điều khoản dịch vụ
+          Điều khoản dịch vụ{" "}
         </a>
-        và
+        và{" "}
         <a href="#" className="underline hover:text-primary">
           Chính sách bảo mật
         </a>

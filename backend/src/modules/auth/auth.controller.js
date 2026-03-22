@@ -8,7 +8,7 @@ export class AuthController {
     try {
       const result = await this.authService.register(req.body);
       // Coderabbit fixed
-      const { password, ...safeUser } = result.user.toObject();
+      res.json(result); // done
       res.status(201).json({ user: safeUser, token: result.token });
     } catch (err) {
       next(err);
