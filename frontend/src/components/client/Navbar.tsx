@@ -1,5 +1,5 @@
 import Logo from "@/assets/green-logo.png";
-import { useAuth } from "@/components/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +19,7 @@ import {
   Bell,
   ChevronDown,
   MapPin,
+  LayoutDashboard,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -71,9 +72,9 @@ const Navbar = () => {
                   />
                 </div>
               </div>
-              <span className="text-lg font-bold tracking-tight">
+              <p className="text-lg font-bold tracking-tight">
                 Green<span className="text-chart-3">Cart</span>
-              </span>
+              </p>
             </a>
 
             {/* SEARCH */}
@@ -122,7 +123,7 @@ const Navbar = () => {
               )}
 
               {/* ACCOUNT */}
-              {user ? (
+              {user?.role === "admin" ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="hidden md:flex items-center border border-primary gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
@@ -164,7 +165,68 @@ const Navbar = () => {
                       </div>
                     </div>
 
+                    <DropdownMenuItem
+                      onClick={() => navigate("/admin/dashboard")}
+                      className="cursor-pointer rounded-xl text-sm gap-2.5 py-2"
+                    >
+                      <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+                      Dashboard
+                    </DropdownMenuItem>
+
                     <DropdownMenuSeparator className="my-1" />
+
+                    <DropdownMenuSeparator className="my-1" />
+
+                    <DropdownMenuItem
+                      onClick={logout}
+                      className="text-destructive focus:text-destructive cursor-pointer rounded-xl text-sm gap-2.5 py-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : user?.role === "user" ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="hidden md:flex items-center border border-primary gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
+                      <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
+                        <User2 size={15} className="text-primary" />
+                      </div>
+                      <div className="flex flex-col items-start leading-none">
+                        <span className="text-[10px] text-muted-foreground">
+                          Tài khoản
+                        </span>
+                        <span className="text-xs font-semibold text-foreground max-w-20 truncate">
+                          {user.name || user.email}
+                        </span>
+                      </div>
+                      <ChevronDown
+                        size={14}
+                        className="text-muted-foreground"
+                      />
+                    </button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 rounded-2xl shadow-xl border-border/60 p-1.5"
+                  >
+                    <div className="px-3 py-2.5 mb-1">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
+                          <User2 size={16} className="text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">
+                            {user.name || "Người dùng"}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate max-w-37.5">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
                     <DropdownMenuItem
                       onClick={() => navigate("/profile")}
@@ -173,6 +235,8 @@ const Navbar = () => {
                       <Settings className="h-4 w-4 text-muted-foreground" />
                       Cài đặt tài khoản
                     </DropdownMenuItem>
+
+                    <DropdownMenuSeparator className="my-1" />
 
                     <DropdownMenuSeparator className="my-1" />
 
