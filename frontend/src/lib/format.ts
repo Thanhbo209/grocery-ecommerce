@@ -19,6 +19,8 @@ export const UNIT_LABEL: Record<ProductUnit, string> = {
   lít: "lít",
   chai: "chai",
   bó: "bó",
+  túi: "túi",
+  gói: "gói",
 };
 
 export const UNIT_OPTIONS: ProductUnit[] = [
@@ -29,4 +31,6 @@ export const UNIT_OPTIONS: ProductUnit[] = [
   "lít",
   "chai",
   "bó",
+  "túi",
+  "gói",
 ];

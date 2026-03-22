@@ -78,7 +78,7 @@ export default function Sidebar({
                   "group flex justify-center items-center gap-2 px-1.5 py-2.5 rounded-md text-xs font-medium transition-all duration-150 relative",
                   isActive
                     ? "bg-primary text-background shadow-md"
-                    : "text-foreground  hover:bg-accent  hover:text-background",
+                    : "text-foreground  hover:bg-accent  hover:text-foreground",
                 ].join(" ")}
               >
                 <Icon

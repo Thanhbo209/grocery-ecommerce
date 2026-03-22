@@ -55,7 +55,7 @@ interface ProductStatsRowProps {
 
 export function ProductStatsRow({ stats, isLoading }: ProductStatsRowProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 text-foreground lg:grid-cols-5">
       <StatCard
         label="Tổng sản phẩm"
         value={stats?.total ?? null}

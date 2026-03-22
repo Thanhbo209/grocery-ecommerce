@@ -93,7 +93,7 @@ export default function ProductsPage() {
     <div className="min-h-screen px-6 py-8">
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl text-foreground font-semibold tracking-tight">
           Quản Lý Sản Phẩm
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">

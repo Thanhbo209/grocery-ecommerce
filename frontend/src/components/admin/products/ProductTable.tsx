@@ -38,7 +38,7 @@ export function ProductTable({
   const someSelected = selectedIds.size > 0 && !allSelected;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
+    <div className="overflow-hidden text-foreground rounded-xl border border-border bg-card">
       <Table>
         <TableHeader>
           <TableRow className="border-border hover:bg-transparent">

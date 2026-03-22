@@ -291,18 +291,15 @@ const Navbar = () => {
               )}
 
               {/* CART */}
-              <button className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-2xl transition-all duration-150 active:scale-95 relative ml-1">
+              <button className="flex items-center bg-primary hover:bg-primary/90 text-primary-foreground px-2 py-2 rounded-2xl transition-all duration-150 active:scale-95 relative ml-1">
                 <div className="relative">
                   <ShoppingCart size={18} />
                   {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 min-w-[16px] h-4 bg-chart-3 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
+                    <span className="absolute -top-3 -right-3 min-w-4 h-4 bg-destructive text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
                       {cartCount}
                     </span>
                   )}
                 </div>
-                <span className="text-sm font-medium hidden sm:block">
-                  Giỏ hàng
-                </span>
               </button>
 
               {/* MOBILE MENU */}
@@ -329,16 +326,17 @@ const Navbar = () => {
       </nav>
 
       {/* Category nav */}
-      <div className="hidden border-b border-border/40 bg-background shadow-sm md:block">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-10 items-center gap-0.5 overflow-x-auto scrollbar-hide">
-            {items.map((cat) => {
-              const isActive = cat._id === activeCategory;
-              return (
-                <button
-                  key={cat._id}
-                  onClick={() => handleSelect(cat._id)}
-                  className={`
+      {pathname === "/" && (
+        <div className="hidden border-b border-border/40 bg-background shadow-sm md:block">
+          <div className="mx-auto max-w-7xl px-4">
+            <div className="flex h-10 items-center gap-0.5 overflow-x-auto scrollbar-hide">
+              {items.map((cat) => {
+                const isActive = cat._id === activeCategory;
+                return (
+                  <button
+                    key={cat._id}
+                    onClick={() => handleSelect(cat._id)}
+                    className={`
                   relative whitespace-nowrap rounded-sm px-3 py-1 text-xs font-medium
                   transition-colors duration-150 shrink-0
                   ${
@@ -347,18 +345,19 @@ const Navbar = () => {
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }
                 `}
-                >
-                  {cat.name}
-                  {/* Active indicator line */}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary" />
-                  )}
-                </button>
-              );
-            })}
+                  >
+                    {cat.name}
+                    {/* Active indicator line */}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 };

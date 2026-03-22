@@ -173,13 +173,13 @@ export function ViewProductModal({
           )}
 
           {/* images[] array from schema */}
-          {product.images.length > 0 && (
+          {(product.images?.length ?? 0) > 0 && (
             <div>
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
-                Hình ảnh ({product.images.length})
+                Hình ảnh ({product.images?.length ?? 0})
               </p>
               <div className="flex flex-wrap gap-2">
-                {product.images.map((url, i) => (
+                {(product.images ?? []).map((url, i) => (
                   <img
                     key={i}
                     src={url}

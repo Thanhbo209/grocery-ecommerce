@@ -30,5 +30,5 @@ export const ADMIN_NAVITEMS = [
   },
   { label: "Người Dùng", icon: Users, href: "/admin/1" },
   { label: "Báo Cáo", icon: BarChart3, href: "/admin/2" },
-  { label: "Cài Đặt", icon: Settings, href: "/admin/dashb3oard" },
+  { label: "Cài Đặt", icon: Settings, href: "/admin/settings" },
 ];
