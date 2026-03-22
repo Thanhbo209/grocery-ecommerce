@@ -7,6 +7,8 @@ import { UserRepository } from "./modules/user/user.repository.js";
 import { AuthService } from "./modules/auth/auth.service.js";
 import { AuthController } from "./modules/auth/auth.controller.js";
 import { createAuthRouter } from "./modules/auth/auth.route.js";
+import categoryRoutes from "./modules/category/category.route.js";
+import productRoutes from "./modules/product/product.routes.js";
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 dns.setDefaultResultOrder("ipv4first");
@@ -30,12 +32,14 @@ app.use(
   }),
 );
 
+// routes
 app.get("/", (req, res) => {
   res.send("Hello from server");
 });
-
 app.use("/api/auth", createAuthRouter(authController));
-
+app.use("/api/categories", categoryRoutes);
+app.use("/api/products", productRoutes);
+// start server
 const startServer = async () => {
   await connectDB(connectionString);
   app.listen(PORT, () => {

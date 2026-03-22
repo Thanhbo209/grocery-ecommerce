@@ -2,7 +2,7 @@ import { ChevronRight, X } from "lucide-react";
 import Logo from "@/assets/green-logo.png";
 import { ADMIN_NAVITEMS } from "@/constants/admin-sidebar";
 import { Link } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 interface SidebarProps {
   collapsed: boolean;
   mobileOpen: boolean;
@@ -14,6 +14,8 @@ export default function Sidebar({
   mobileOpen,
   onMobileClose,
 }: SidebarProps) {
+  const location = useLocation();
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -65,6 +67,8 @@ export default function Sidebar({
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           {ADMIN_NAVITEMS.map((item) => {
             const Icon = item.icon;
+            const isActive = location.pathname.startsWith(item.href);
+            console.log(item.href);
             return (
               <Link
                 key={item.label}
@@ -72,16 +76,16 @@ export default function Sidebar({
                 title={collapsed ? item.label : undefined}
                 className={[
                   "group flex justify-center items-center gap-2 px-1.5 py-2.5 rounded-md text-xs font-medium transition-all duration-150 relative",
-                  item.active
+                  isActive
                     ? "bg-primary text-background shadow-md"
-                    : "text-foreground  hover:bg-accent  hover:text-background",
+                    : "text-foreground  hover:bg-accent  hover:text-foreground",
                 ].join(" ")}
               >
                 <Icon
                   size={13}
                   className={[
                     "shrink-0 transition-transform group-hover:scale-110",
-                    item.active ? "text-background" : "",
+                    isActive ? "text-background" : "",
                   ].join(" ")}
                 />
 

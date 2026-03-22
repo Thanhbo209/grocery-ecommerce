@@ -7,7 +7,7 @@ import Navbar from "@/components/admin/Navbar";
 const pageTitles = {
   "/": "Dashboard",
   "/admin/dashboard": "Dashboard",
-  "/admin/mon-an": "Món Ăn",
+  "/admin/products": "Sản Phẩm",
   "/admin/cong-thuc": "Công Thức",
   "/admin/nguyen-lieu": "Nguyên Liệu",
   "/admin/nguoi-dung": "Người Dùng",
@@ -21,7 +21,8 @@ export default function AdminLayout() {
   const [darkMode, setDarkMode] = useState(false);
 
   const location = useLocation();
-  const pageTitle = pageTitles[location.pathname] ?? "Admin";
+  const pageTitle =
+    pageTitles[location.pathname as keyof typeof pageTitles] ?? "Admin";
 
   return (
     <div className={darkMode ? "dark" : ""}>

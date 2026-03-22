@@ -96,7 +96,9 @@ export default function Navbar({
       </button>
 
       {/* Page title */}
-      <h1 className="text-base font-semibold  hidden sm:block">{pageTitle}</h1>
+      <h1 className="text-base font-semibold text-foreground hidden sm:block">
+        {pageTitle}
+      </h1>
 
       {/* Search */}
       <div className="flex-1 max-w-sm mx-auto lg:mx-0 lg:ml-4">

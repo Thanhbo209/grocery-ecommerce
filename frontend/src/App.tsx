@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import AdminLayout from "@/layouts/AdminLayout";
 import DashboardPage from "@/pages/admin/Dashboard";
+import ProductsPage from "@/pages/admin/ProductsPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           }
         >
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="products" element={<ProductsPage />} />
         </Route>
       </Routes>
     </>
