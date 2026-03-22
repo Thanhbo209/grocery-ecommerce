@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { SocialLogin } from "./SocialLogin";
-import { PasswordInput } from "./PasswordInput";
+import { SocialLogin } from "../SocialLogin";
+import { PasswordInput } from "../PasswordInput";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { toast } from "sonner";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
@@ -37,12 +38,19 @@ export function LoginForm() {
       setLoading(true);
 
       const res = await axios.post(`${VITE_API_URL}/api/auth/login`, data);
+      toast.success("Đăng nhập thành công!");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      window.location.href = "/";
-    } catch (error: unknown) {
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
+    } catch (error: any) {
       console.error("Login Failed: ", error);
-      alert(error || "Đăng nhập thất bại");
+
+      const message =
+        error?.response?.data?.message || "Email hoặc mật khẩu không đúng";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -147,9 +155,9 @@ export function LoginForm() {
 
       {/* Register link */}
       <p className="mt-5 text-center text-sm text-muted-foreground">
-        Chưa có tài khoản?
+        Chưa có tài khoản?{" "}
         <a
-          href="#"
+          href="/register"
           className="font-semibold text-primary transition-colors hover:underline"
         >
           Đăng ký ngay
@@ -158,11 +166,11 @@ export function LoginForm() {
 
       {/* ToS */}
       <p className="mt-7 text-center text-[11px] leading-relaxed text-muted-foreground">
-        Bằng cách đăng nhập, bạn đồng ý với
+        Bằng cách đăng nhập, bạn đồng ý với{" "}
         <a href="#" className="underline hover:text-primary">
-          Điều khoản dịch vụ
+          Điều khoản dịch vụ{" "}
         </a>
-        và
+        và{" "}
         <a href="#" className="underline hover:text-primary">
           Chính sách bảo mật
         </a>
