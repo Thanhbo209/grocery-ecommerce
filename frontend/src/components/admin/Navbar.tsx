@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type RefObject } from "react";
 import {
   Menu,
   Search,
@@ -10,6 +10,7 @@ import {
   Home,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
 
 const notifications = [
   {
@@ -33,7 +34,7 @@ const notifications = [
 ];
 
 function useOutsideClick(
-  ref: React.RefObject<HTMLDivElement>,
+  ref: RefObject<HTMLDivElement | null>,
   handler: () => void,
 ) {
   useEffect(() => {
@@ -47,11 +48,12 @@ function useOutsideClick(
 }
 
 interface NavbarProps {
-  onToggleSidebar: () => boolean;
-  onToggleMobile: () => boolean;
-  onToggleDark: () => boolean;
+  collapsed: boolean;
+  onToggleSidebar: () => void;
+  onToggleMobile: () => void;
+  onToggleDark: () => void;
   pageTitle: string;
-  darkMode: string;
+  darkMode: boolean;
 }
 
 export default function Navbar({
@@ -61,6 +63,7 @@ export default function Navbar({
   onToggleDark,
   pageTitle = "Dashboard",
 }: NavbarProps) {
+  const { user } = useAuth();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -209,9 +212,9 @@ export default function Navbar({
           {profileOpen && (
             <div className="absolute right-0 mt-2 w-52 bg-card rounded-2xl shadow-xl border border-border  overflow-hidden z-50">
               <div className="px-4 py-3 border-b border-border ">
-                <p className="text-sm font-semibold ">Admin</p>
+                <p className="text-sm font-semibold ">{user?.name}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  admin@food.vn
+                  {user?.email}
                 </p>
               </div>
               <div className="p-1.5">

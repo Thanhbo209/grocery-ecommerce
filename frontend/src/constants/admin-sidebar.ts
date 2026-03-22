@@ -15,8 +15,14 @@ export const ADMIN_NAVITEMS = [
     href: "/admin/dashboard",
     active: true,
   },
-  { label: "Sản Phẩm", icon: CarrotIcon, href: "#", badge: "12" },
-  { label: "Công Thức", icon: FlaskConical, href: "#" },
+  {
+    label: "Sản Phẩm",
+    icon: CarrotIcon,
+    href: "",
+    badge: "12",
+    disabled: true,
+  },
+  { label: "Công Thức", icon: FlaskConical, href: "", disabled: true },
   {
     label: "Nguyên Liệu",
     icon: ShoppingBasket,
@@ -24,7 +30,7 @@ export const ADMIN_NAVITEMS = [
     badge: "3",
     badgeWarning: true,
   },
-  { label: "Người Dùng", icon: Users, href: "#" },
-  { label: "Báo Cáo", icon: BarChart3, href: "#" },
-  { label: "Cài Đặt", icon: Settings, href: "#" },
+  { label: "Người Dùng", icon: Users, href: "", disabled: true },
+  { label: "Báo Cáo", icon: BarChart3, href: "", disabled: true },
+  { label: "Cài Đặt", icon: Settings, href: "", disabled: true },
 ];

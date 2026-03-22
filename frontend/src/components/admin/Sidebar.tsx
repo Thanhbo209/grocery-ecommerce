@@ -1,11 +1,12 @@
 import { ChevronRight, X } from "lucide-react";
 import Logo from "@/assets/green-logo.png";
 import { ADMIN_NAVITEMS } from "@/constants/admin-sidebar";
+import { Link } from "react-router-dom";
 
 interface SidebarProps {
   collapsed: boolean;
   mobileOpen: boolean;
-  onMobileClose: () => boolean;
+  onMobileClose: () => void;
 }
 
 export default function Sidebar({
@@ -65,9 +66,9 @@ export default function Sidebar({
           {ADMIN_NAVITEMS.map((item) => {
             const Icon = item.icon;
             return (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                to={item.href}
                 title={collapsed ? item.label : undefined}
                 className={[
                   "group flex justify-center items-center gap-2 px-1.5 py-2.5 rounded-md text-xs font-medium transition-all duration-150 relative",
@@ -119,7 +120,7 @@ export default function Sidebar({
                     {item.badge && <span className="hidden">{item.badge}</span>}
                   </div>
                 )}
-              </a>
+              </Link>
             );
           })}
         </nav>

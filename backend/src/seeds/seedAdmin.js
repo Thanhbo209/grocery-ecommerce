@@ -6,6 +6,9 @@ dotenv.config();
 const connectionString = process.env.MONGO_URI;
 const seedAdmin = async () => {
   try {
+    if (!connectionString) {
+      throw new Error("MONGO_URI is not set");
+    }
     await mongoose.connect(connectionString);
     console.log("✅ Kết nối MongoDB thành công");
 

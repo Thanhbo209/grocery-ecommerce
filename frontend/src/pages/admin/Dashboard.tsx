@@ -110,7 +110,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent dishes table */}
-      <div className="bg-card ounded-2xl border border-border  overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border  overflow-hidden">
         <div className="px-5 py-4 border-b border-border  flex items-center justify-between">
           <h2 className="text-sm font-semibold  text-foreground">
             Món ăn gần đây

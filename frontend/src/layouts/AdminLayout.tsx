@@ -6,7 +6,7 @@ import Navbar from "@/components/admin/Navbar";
 // Map pathname → page title
 const pageTitles = {
   "/": "Dashboard",
-  "/admin": "Dashboard",
+  "/admin/dashboard": "Dashboard",
   "/admin/mon-an": "Món Ăn",
   "/admin/cong-thuc": "Công Thức",
   "/admin/nguyen-lieu": "Nguyên Liệu",
@@ -37,7 +37,7 @@ export default function AdminLayout() {
         <div
           className={[
             "flex flex-col flex-1 min-w-0 transition-all duration-300",
-            collapsed ? "lg:ml-[72px]" : "lg:ml-64",
+            collapsed ? "lg:ml-18" : "lg:ml-64",
           ].join(" ")}
         >
           {/* Navbar */}

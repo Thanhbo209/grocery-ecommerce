@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "seed:admin": "node src/seeds/seedAdmin.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
