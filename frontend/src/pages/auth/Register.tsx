@@ -1,4 +1,4 @@
-import { RegisterForm } from "@/components/client/auth/register/RegisteForm";
+import { RegisterForm } from "@/components/client/auth/register/RegisterForm";
 import { RegisterHero } from "@/components/client/auth/register/RegisterHero";
 
 export function RegisterPage() {
