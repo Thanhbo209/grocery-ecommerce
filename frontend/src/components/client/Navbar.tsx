@@ -21,15 +21,39 @@ import {
   MapPin,
   LayoutDashboard,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
+import { useCategories } from "@/hooks/useCategories";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { categories } = useCategories();
   const navigate = useNavigate();
   const [searchFocused, setSearchFocused] = useState(false);
   const [cartCount] = useState(3); // mock cart count
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { pathname } = useLocation();
 
+  const activeCategory = searchParams.get("category") ?? "";
+
+  const handleSelect = (categoryId: string) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (categoryId === "") {
+        next.delete("category");
+      } else {
+        next.set("category", categoryId);
+      }
+      // Reset về trang 1 khi đổi danh mục
+      next.delete("page");
+      return next;
+    });
+  };
+
+  // Chỉ hiện ở route "/"
+  if (pathname !== "/") return null;
+
+  const items = [{ _id: "", name: "Tất Cả Danh Mục" }, ...categories];
   return (
     <header className="fixed top-0 left-0 w-full z-50">
       {/* Top bar */}
@@ -305,32 +329,33 @@ const Navbar = () => {
       </nav>
 
       {/* Category nav */}
-      <div className="bg-background border-b shadow-2xl border-border/40 hidden md:block">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center gap-1 h-10 overflow-x-auto scrollbar-hide">
-            {[
-              "Rau củ quả",
-              "Trái cây",
-              "Thịt tươi",
-              "Hải sản",
-              "Sữa & Trứng",
-              "Đồ khô",
-              "Thức uống",
-              "Đông lạnh",
-              "Hữu cơ",
-            ].map((cat, i) => (
-              <a
-                key={cat}
-                href="#"
-                className={`whitespace-nowrap px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
-                  i === 0
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                {cat}
-              </a>
-            ))}
+      <div className="hidden border-b border-border/40 bg-background shadow-sm md:block">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex h-10 items-center gap-0.5 overflow-x-auto scrollbar-hide">
+            {items.map((cat) => {
+              const isActive = cat._id === activeCategory;
+              return (
+                <button
+                  key={cat._id}
+                  onClick={() => handleSelect(cat._id)}
+                  className={`
+                  relative whitespace-nowrap rounded-sm px-3 py-1 text-xs font-medium
+                  transition-colors duration-150 shrink-0
+                  ${
+                    isActive
+                      ? " text-primary"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }
+                `}
+                >
+                  {cat.name}
+                  {/* Active indicator line */}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
