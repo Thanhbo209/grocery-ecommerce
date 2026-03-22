@@ -29,7 +29,6 @@ function App() {
             </AdminRoute>
           }
         >
-          <Route index element={<DashboardPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
         </Route>
       </Routes>
