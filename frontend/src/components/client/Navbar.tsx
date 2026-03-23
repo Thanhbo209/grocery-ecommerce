@@ -171,7 +171,7 @@ const Navbar = () => {
 
                   <DropdownMenuContent
                     align="end"
-                    className="w-56 rounded-2xl shadow-xl border-border/60 p-1.5"
+                    className="w-56  shadow-xl border-border/60 p-1.5"
                   >
                     <div className="px-3 py-2.5 mb-1">
                       <div className="flex items-center gap-2.5">
