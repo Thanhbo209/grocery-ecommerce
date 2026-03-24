@@ -358,6 +358,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (!id) return;
+    let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
@@ -366,13 +367,23 @@ export default function ProductDetailPage() {
 
     productApi
       .getById(id)
-      .then(setProduct)
-      .catch((err: unknown) =>
-        setError(
-          err instanceof Error ? err.message : "Không tìm thấy sản phẩm",
-        ),
-      )
-      .finally(() => setLoading(false));
+      .then((nextProduct) => {
+        if (!cancelled) setProduct(nextProduct);
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setError(
+            err instanceof Error ? err.message : "Không tìm thấy sản phẩm",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const handleAddToCart = () => {

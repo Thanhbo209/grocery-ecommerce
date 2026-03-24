@@ -47,10 +47,7 @@ function FeaturedCard({ product }: { product: Product }) {
               </p>
             )}
           </div>
-          <button
-            onClick={() => navigate(`/product/${product._id}`)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white hover:scale-105"
-          >
+          <button className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white hover:scale-105">
             <Plus size={14} />
           </button>
         </div>

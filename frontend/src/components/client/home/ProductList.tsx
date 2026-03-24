@@ -20,7 +20,15 @@ function AllProductCard({ product }: { product: Product }) {
   return (
     <div
       className="group flex flex-col overflow-hidden cursor-pointer rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+      role="link"
       onClick={() => navigate(`/product/${product._id}`)}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate(`/product/${product._id}`);
+        }
+      }}
     >
       <div className="relative h-36 overflow-hidden bg-card">
         <img
