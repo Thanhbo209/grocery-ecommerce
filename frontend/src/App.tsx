@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import AdminLayout from "@/layouts/AdminLayout";
 import DashboardPage from "@/pages/admin/Dashboard";
 import ProductsPage from "@/pages/admin/ProductsPage";
+import ProductDetailPage from "@/pages/client/ProductDetailPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         {/* PUBLIC ROUTES */}
         <Route element={<ClientLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

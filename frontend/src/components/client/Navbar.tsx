@@ -1,365 +1,432 @@
-import Logo from "@/assets/green-logo.png";
-import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useRef, useState } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import {
-  ShoppingCart,
-  User2,
-  Menu,
-  Search,
-  Settings,
-  LogOut,
-  Heart,
-  Bell,
   ChevronDown,
-  MapPin,
   LayoutDashboard,
+  LogOut,
+  Menu,
+  Package,
+  Search,
+  ShoppingCart,
+  User,
+  X,
 } from "lucide-react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useState } from "react";
-import { useCategories } from "@/hooks/useCategories";
+import { cn } from "@/lib/utils";
+import { categoryApi } from "@/hooks/api";
+import type { Category } from "@/types/product";
 
-const Navbar = () => {
-  const { user, logout } = useAuth();
-  const { categories } = useCategories();
-  const navigate = useNavigate();
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [cartCount] = useState(3); // mock cart count
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { pathname } = useLocation();
+// ─── Hooks placeholder — thay bằng hook thực của project ─────────────────────
 
-  const activeCategory = searchParams.get("category") ?? "";
+interface AuthUser {
+  name: string;
+  role: "admin" | "user";
+}
 
-  const handleSelect = (categoryId: string) => {
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-      if (categoryId === "") {
-        next.delete("category");
-      } else {
-        next.set("category", categoryId);
-      }
-      // Reset về trang 1 khi đổi danh mục
-      next.delete("page");
-      return next;
-    });
+function useAuth() {
+  const raw = localStorage.getItem("user");
+  const token =
+    localStorage.getItem("token") ?? localStorage.getItem("accessToken");
+  const user: AuthUser | null =
+    token && raw ? (JSON.parse(raw) as AuthUser) : null;
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    window.location.href = "/";
   };
 
-  // Chỉ hiện ở route "/"
-  if (pathname !== "/") return null;
+  return { user, logout };
+}
 
-  const items = [{ _id: "", name: "Tất Cả Danh Mục" }, ...categories];
+function useCartCount(): number {
+  // TODO: replace with real cart store selector
+  return 0;
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+/** Inline search form — dùng cả desktop lẫn mobile */
+function SearchForm({
+  className,
+  onSubmit,
+}: {
+  className?: string;
+  onSubmit?: () => void;
+}) {
+  const [searchParams] = useSearchParams();
+  const [value, setValue] = useState(searchParams.get("search") ?? "");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = value.trim();
+    navigate(q ? `/shop?search=${encodeURIComponent(q)}` : "/shop");
+    onSubmit?.();
+  };
+
   return (
-    <header className="fixed top-0 left-0 w-full z-50">
-      {/* Top bar */}
-      <div className="bg-primary text-primary-foreground text-xs py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-1 text-primary-foreground/80">
-            <MapPin size={11} />
-            <span>Giao hàng toàn quốc · Miễn phí từ 299k</span>
-          </div>
-          <div className="hidden md:flex items-center gap-4 text-primary-foreground/80">
-            <a
-              href="#"
-              className="hover:text-primary-foreground transition-colors"
-            >
-              Chính sách đổi trả
-            </a>
-            <span>·</span>
-            <a
-              href="#"
-              className="hover:text-primary-foreground transition-colors"
-            >
-              Hỗ trợ khách hàng
-            </a>
-          </div>
+    <form
+      onSubmit={handleSubmit}
+      className={cn("relative flex items-center", className)}
+    >
+      <Search
+        size={14}
+        className="absolute left-3 text-muted-foreground pointer-events-none"
+      />
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Tìm kiếm sản phẩm..."
+        className="h-9 w-full rounded-full border border-border bg-muted/50 pl-9 pr-4 text-sm outline-none placeholder:text-muted-foreground focus:border-emerald-400 focus:bg-background transition-colors"
+      />
+    </form>
+  );
+}
+
+/** Avatar + dropdown menu khi đã đăng nhập */
+function UserDropdown({
+  user,
+  logout,
+}: {
+  user: AuthUser;
+  logout: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-muted"
+      >
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700">
+          {user.name.charAt(0).toUpperCase()}
         </div>
-      </div>
+        <span className="hidden max-w-[80px] truncate sm:inline">
+          {user.name}
+        </span>
+        <ChevronDown
+          size={12}
+          className={cn(
+            "text-muted-foreground transition-transform",
+            open && "rotate-180",
+          )}
+        />
+      </button>
 
-      {/* Main navbar */}
-      <nav className="bg-background/95 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center gap-4 h-16">
-            {/* LOGO */}
-            <a href="/" className="flex items-center gap-2.5 shrink-0 group">
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden group-hover:bg-primary/20 transition-colors">
-                  <img
-                    src={Logo}
-                    alt="logo"
-                    className="w-7 h-7 object-contain"
-                  />
-                </div>
-              </div>
-              <p className="text-lg font-bold tracking-tight">
-                Green<span className="text-chart-3">Cart</span>
-              </p>
-            </a>
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
+          {/* User info */}
+          <div className="border-b border-border px-4 py-3">
+            <p className="text-xs text-muted-foreground">Xin chào,</p>
+            <p className="truncate text-sm font-semibold">{user.name}</p>
+          </div>
 
-            {/* SEARCH */}
-            <div className="flex-1 mx-2 hidden md:block">
-              <div
-                className={`relative flex items-center rounded-2xl border transition-all duration-200 ${
-                  searchFocused
-                    ? "border-primary shadow-[0_0_0_3px_hsl(var(--primary)/0.12)]"
-                    : "border-border bg-muted/40 hover:border-primary/40"
-                }`}
+          {/* Menu items */}
+          <nav className="py-1.5">
+            {[
+              { to: "/profile", icon: <User size={14} />, label: "Tài khoản" },
+              {
+                to: "/orders",
+                icon: <Package size={14} />,
+                label: "Đơn hàng của tôi",
+              },
+              ...(user.role === "admin"
+                ? [
+                    {
+                      to: "/admin/dashboard",
+                      icon: <LayoutDashboard size={14} />,
+                      label: "Quản trị",
+                    },
+                  ]
+                : []),
+            ].map(({ to, icon, label }) => (
+              <Link
+                key={to}
+                to={to}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-muted"
               >
-                <Search
-                  size={16}
-                  className={`absolute left-3.5 transition-colors ${
-                    searchFocused ? "text-primary" : "text-muted-foreground"
-                  }`}
-                />
-                <Input
-                  placeholder="Tìm kiếm rau củ, trái cây, thực phẩm..."
-                  className="pl-10 pr-28 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-10"
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                />
-                <button className="absolute right-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-xl transition-colors">
-                  Tìm kiếm
-                </button>
-              </div>
-            </div>
+                <span className="text-muted-foreground">{icon}</span>
+                {label}
+              </Link>
+            ))}
+          </nav>
 
-            {/* RIGHT ACTIONS */}
-            <div className="flex items-center gap-1 shrink-0">
-              {/* Wishlist */}
-              <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors relative group">
-                <Heart
-                  size={20}
-                  className="text-muted-foreground group-hover:text-rose-500 transition-colors"
-                />
-              </button>
-
-              {/* Notification */}
-              {user && (
-                <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors relative">
-                  <Bell size={20} className="text-muted-foreground" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-chart-3 rounded-full ring-2 ring-background" />
-                </button>
-              )}
-
-              {/* ACCOUNT */}
-              {user?.role === "admin" ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="hidden md:flex items-center border border-primary gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
-                      <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
-                        <User2 size={15} className="text-primary" />
-                      </div>
-                      <div className="flex flex-col items-start leading-none">
-                        <span className="text-[10px] text-muted-foreground">
-                          Tài khoản
-                        </span>
-                        <span className="text-xs font-semibold text-foreground max-w-20 truncate">
-                          {user.name || user.email}
-                        </span>
-                      </div>
-                      <ChevronDown
-                        size={14}
-                        className="text-muted-foreground"
-                      />
-                    </button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-56  shadow-xl border-border/60 p-1.5"
-                  >
-                    <div className="px-3 py-2.5 mb-1">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
-                          <User2 size={16} className="text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">
-                            {user.name || "Người dùng"}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate max-w-37.5">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <DropdownMenuItem
-                      onClick={() => navigate("/admin/dashboard")}
-                      className="cursor-pointer rounded-xl text-sm gap-2.5 py-2"
-                    >
-                      <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-                      Dashboard
-                    </DropdownMenuItem>
-
-                    <DropdownMenuSeparator className="my-1" />
-
-                    <DropdownMenuSeparator className="my-1" />
-
-                    <DropdownMenuItem
-                      onClick={logout}
-                      className="text-destructive focus:text-destructive cursor-pointer rounded-xl text-sm gap-2.5 py-2"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Đăng xuất
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : user?.role === "user" ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="hidden md:flex items-center border border-primary gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
-                      <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
-                        <User2 size={15} className="text-primary" />
-                      </div>
-                      <div className="flex flex-col items-start leading-none">
-                        <span className="text-[10px] text-muted-foreground">
-                          Tài khoản
-                        </span>
-                        <span className="text-xs font-semibold text-foreground max-w-20 truncate">
-                          {user.name || user.email}
-                        </span>
-                      </div>
-                      <ChevronDown
-                        size={14}
-                        className="text-muted-foreground"
-                      />
-                    </button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-56 rounded-2xl shadow-xl border-border/60 p-1.5"
-                  >
-                    <div className="px-3 py-2.5 mb-1">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
-                          <User2 size={16} className="text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">
-                            {user.name || "Người dùng"}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate max-w-37.5">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <DropdownMenuItem
-                      onClick={() => navigate("/profile")}
-                      className="cursor-pointer rounded-xl text-sm gap-2.5 py-2"
-                    >
-                      <Settings className="h-4 w-4 text-muted-foreground" />
-                      Cài đặt tài khoản
-                    </DropdownMenuItem>
-
-                    <DropdownMenuSeparator className="my-1" />
-
-                    <DropdownMenuSeparator className="my-1" />
-
-                    <DropdownMenuItem
-                      onClick={logout}
-                      className="text-destructive focus:text-destructive cursor-pointer rounded-xl text-sm gap-2.5 py-2"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Đăng xuất
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <a
-                  href="/login"
-                  className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors"
-                >
-                  <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center">
-                    <User2 size={15} className="text-muted-foreground" />
-                  </div>
-                  <div className="flex flex-col items-start leading-none">
-                    <span className="text-[10px] text-muted-foreground">
-                      Chào mừng
-                    </span>
-                    <span className="text-xs font-semibold">Đăng nhập</span>
-                  </div>
-                </a>
-              )}
-
-              {/* CART */}
-              <button className="flex items-center bg-primary hover:bg-primary/90 text-primary-foreground px-2 py-2 rounded-2xl transition-all duration-150 active:scale-95 relative ml-1">
-                <div className="relative">
-                  <ShoppingCart size={18} />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-3 -right-3 min-w-4 h-4 bg-destructive text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">
-                      {cartCount}
-                    </span>
-                  )}
-                </div>
-              </button>
-
-              {/* MOBILE MENU */}
-              <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors ml-1">
-                <Menu size={20} />
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile search */}
-          <div className="md:hidden pb-3">
-            <div className="relative flex items-center rounded-2xl border border-border bg-muted/40">
-              <Search
-                size={15}
-                className="absolute left-3 text-muted-foreground"
-              />
-              <Input
-                placeholder="Tìm kiếm sản phẩm..."
-                className="pl-9 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-9"
-              />
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Category nav */}
-      {pathname === "/" && (
-        <div className="hidden border-b border-border/40 bg-background shadow-sm md:block">
-          <div className="mx-auto max-w-7xl px-4">
-            <div className="flex h-10 items-center gap-0.5 overflow-x-auto scrollbar-hide">
-              {items.map((cat) => {
-                const isActive = cat._id === activeCategory;
-                return (
-                  <button
-                    key={cat._id}
-                    onClick={() => handleSelect(cat._id)}
-                    className={`
-                  relative whitespace-nowrap rounded-sm px-3 py-1 text-xs font-medium
-                  transition-colors duration-150 shrink-0
-                  ${
-                    isActive
-                      ? " text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }
-                `}
-                  >
-                    {cat.name}
-                    {/* Active indicator line */}
-                    {isActive && (
-                      <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Logout */}
+          <div className="border-t border-border py-1.5">
+            <button
+              onClick={() => {
+                setOpen(false);
+                logout();
+              }}
+              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 transition-colors hover:bg-red-50"
+            >
+              <LogOut size={14} /> Đăng xuất
+            </button>
           </div>
         </div>
       )}
-    </header>
+    </div>
   );
-};
+}
 
-export default Navbar;
+/** Thanh danh mục bên dưới navbar — chỉ hiện ở route "/" */
+function CategoryStrip({ categories }: { categories: Category[] }) {
+  const { pathname } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeId = searchParams.get("category") ?? "";
+
+  if (pathname !== "/") return null;
+
+  const items: Pick<Category, "_id" | "name">[] = [
+    { _id: "", name: "Tất Cả" },
+    ...categories,
+  ];
+
+  const handleSelect = (id: string) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        id ? next.set("category", id) : next.delete("category");
+        next.delete("page");
+        return next;
+      },
+      { replace: true },
+    );
+  };
+
+  return (
+    <div className="border-b border-border/50 bg-background">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex h-9 items-center gap-0.5 overflow-x-auto scrollbar-hide">
+          {items.map((cat) => {
+            const active = cat._id === activeId;
+            return (
+              <button
+                key={cat._id}
+                onClick={() => handleSelect(cat._id)}
+                className={cn(
+                  "relative shrink-0 whitespace-nowrap rounded-sm px-3 py-1 text-xs font-medium transition-colors",
+                  active
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {cat.name}
+                {active && (
+                  <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-emerald-500" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
+
+export default function Navbar() {
+  const { user, logout } = useAuth();
+  const cartCount = useCartCount();
+  const { pathname } = useLocation();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
+
+  // Fetch categories once
+  useEffect(() => {
+    categoryApi.getAll().then(setCategories).catch(console.error);
+  }, []);
+
+  const NAV_LINKS = [
+    { to: "/", label: "Trang chủ" },
+    { to: "/shop", label: "Cửa hàng" },
+    { to: "/about", label: "Về chúng tôi" },
+  ];
+
+  return (
+    <>
+      {/* ── Main bar (fixed) ── */}
+      <header className="fixed left-0 right-0 top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-md">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex h-16 items-center gap-4">
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex shrink-0 items-center gap-2 font-bold text-emerald-600"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm text-white">
+                🌿
+              </span>
+              <span className="hidden text-base sm:inline">GreenMart</span>
+            </Link>
+
+            {/* Desktop nav links */}
+            <nav className="hidden items-center gap-1 md:flex">
+              {NAV_LINKS.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                    pathname === to
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Desktop search — grows */}
+            <div className="hidden flex-1 md:block max-w-sm">
+              <SearchForm />
+            </div>
+
+            {/* Right actions */}
+            <div className="ml-auto flex items-center gap-2">
+              {/* Mobile search toggle */}
+              <button
+                onClick={() => setSearchOpen((o) => !o)}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted md:hidden"
+              >
+                {searchOpen ? <X size={18} /> : <Search size={18} />}
+              </button>
+
+              {/* Cart */}
+              <Link
+                to="/cart"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
+              >
+                <ShoppingCart size={19} />
+                {cartCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Auth */}
+              {user ? (
+                <UserDropdown user={user} logout={logout} />
+              ) : (
+                <div className="hidden items-center gap-2 sm:flex">
+                  <Link
+                    to="/login"
+                    className="rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="rounded-full bg-emerald-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+                  >
+                    Đăng ký
+                  </Link>
+                </div>
+              )}
+
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setMobileOpen((o) => !o)}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted md:hidden"
+              >
+                {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile search bar — drops down */}
+          {searchOpen && (
+            <div className="pb-3 md:hidden">
+              <SearchForm onSubmit={() => setSearchOpen(false)} />
+            </div>
+          )}
+        </div>
+
+        {/* Category strip — chỉ hiện ở trang "/" */}
+        <CategoryStrip categories={categories} />
+      </header>
+
+      {/* ── Mobile slide-in menu ── */}
+      {mobileOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+
+          {/* Drawer */}
+          <nav className="fixed left-0 right-0 top-[65px] z-40 border-b border-border bg-background shadow-lg md:hidden">
+            <div className="flex flex-col divide-y divide-border">
+              {NAV_LINKS.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "px-6 py-3.5 text-sm font-medium transition-colors",
+                    pathname === to
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "text-foreground hover:bg-muted",
+                  )}
+                >
+                  {label}
+                </Link>
+              ))}
+
+              {/* Auth links mobile */}
+              {!user && (
+                <div className="flex gap-3 px-6 py-4">
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex-1 rounded-full border border-border py-2 text-center text-sm font-medium hover:bg-muted"
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex-1 rounded-full bg-emerald-600 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-700"
+                  >
+                    Đăng ký
+                  </Link>
+                </div>
+              )}
+            </div>
+          </nav>
+        </>
+      )}
+    </>
+  );
+}
