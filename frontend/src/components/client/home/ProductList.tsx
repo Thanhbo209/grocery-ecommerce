@@ -18,7 +18,10 @@ function productImage(p: Product) {
 function AllProductCard({ product }: { product: Product }) {
   const navigate = useNavigate();
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+    <div
+      className="group flex flex-col overflow-hidden cursor-pointer rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+      onClick={() => navigate(`/product/${product._id}`)}
+    >
       <div className="relative h-36 overflow-hidden bg-card">
         <img
           src={productImage(product)}
@@ -59,7 +62,6 @@ function AllProductCard({ product }: { product: Product }) {
             )}
           </div>
           <button
-            onClick={() => navigate(`/product/${product._id}`)}
             disabled={product.stock === 0}
             className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white hover:bg-emerald-700 disabled:opacity-40"
           >

@@ -16,7 +16,10 @@ function productImage(p: Product) {
 function FeaturedCard({ product }: { product: Product }) {
   const navigate = useNavigate();
   return (
-    <div className="group flex w-50 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
+    <div
+      className="group flex w-50 shrink-0 flex-col overflow-hidden cursor-pointer rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
+      onClick={() => navigate(`/product/${product._id}`)}
+    >
       <div className="relative h-40 overflow-hidden bg-card">
         <img
           src={productImage(product)}
