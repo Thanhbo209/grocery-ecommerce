@@ -175,7 +175,7 @@ function UserDropdown({
                 setOpen(false);
                 logout();
               }}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-destructive transition-colors hover:destructive/20"
+              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/20"
             >
               <LogOut size={14} /> Đăng xuất
             </button>
@@ -280,10 +280,11 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               to="/"
+              aria-label="GreenMart"
               className="flex shrink-0 items-center gap-2 font-bold text-primary"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm text-white">
-                <img src={Logo} alt="" />
+              <span className="flex h-12 w-12 items-center justify-center p-1 rounded-full border-2 border-primary text-sm text-white">
+                <img src={Logo} alt="" className="object-cover" />
               </span>
               <span className="hidden text-base sm:inline">GreenMart</span>
             </Link>

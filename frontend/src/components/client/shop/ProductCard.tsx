@@ -4,7 +4,7 @@ import { formatNumber, formatPrice, UNIT_LABEL } from "@/lib/format";
 import { discountPct, productImg } from "@/lib/helper";
 import type { Product } from "@/types/product";
 import { Plus, Star } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function ProductCard({
   product,
@@ -21,19 +21,19 @@ export function ProductCard({
 
   if (view === "list") {
     return (
-      <div
-        onClick={() => navigate(`/product/${product._id}`)}
-        className="group flex cursor-pointer gap-4 rounded-2xl border border-border bg-card p-3 transition-all hover:border-primary/30 hover:shadow-sm"
+      <Link
+        to={`/product/${product._id}`}
+        className="group flex gap-4 rounded-2xl border border-border bg-card p-3 transition-all hover:border-primary/30 hover:shadow-sm"
       >
         {/* Image */}
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-50">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl ">
           <img
             src={img}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform bg-card duration-300 group-hover:scale-105"
           />
           {product.discountPrice && (
-            <span className="absolute left-1 top-1 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+            <span className="absolute left-1 top-1 rounded-full bg-destructive px-1.5 py-0.5 text-[9px] font-bold text-white">
               -{discountPct(product.price, product.discountPrice)}%
             </span>
           )}
@@ -96,7 +96,7 @@ export function ProductCard({
             <Plus size={15} />
           </button>
         </div>
-      </div>
+      </Link>
     );
   }
 
@@ -107,7 +107,7 @@ export function ProductCard({
       className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md"
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div className="relative aspect-square overflow-hidden bg-card">
         <img
           src={img}
           alt={product.name}
@@ -119,7 +119,7 @@ export function ProductCard({
           </span>
         )}
         {product.discountPrice && (
-          <span className="absolute right-2 top-2 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+          <span className="absolute right-2 top-2 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-white">
             -{discountPct(product.price, product.discountPrice)}%
           </span>
         )}
@@ -162,9 +162,12 @@ export function ProductCard({
             </p>
             <p className="text-[10px] text-muted-foreground">
               {product.discountPrice ? (
-                <span className="line-through">
-                  {formatPrice(product.price)}
-                </span>
+                <>
+                  <span className="line-through">
+                    {formatPrice(product.price)}
+                  </span>
+                  <span className="ml-1">/{unit}</span>
+                </>
               ) : (
                 `/${unit}`
               )}

@@ -52,9 +52,9 @@ export function ActiveFilterBadges({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className="text-xs text-muted-foreground">Đang lọc:</span>
-      {badges.map(({ label, onRemove }) => (
+      {badges.map(({ label, onRemove }, i) => (
         <button
-          key={label}
+          key={`${label}-${i}`}
           onClick={onRemove}
           className="flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
         >

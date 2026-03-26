@@ -46,18 +46,27 @@ export default function ShopPage() {
   const [view, setView] = useState<"grid" | "list">("grid");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  const rawPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
+  const safePage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+  const rawPrice = searchParams.get("priceRange");
+  const parsedPrice = rawPrice !== null ? Number.parseInt(rawPrice, 10) : null;
+  const safePriceRange =
+    parsedPrice !== null &&
+    Number.isInteger(parsedPrice) &&
+    parsedPrice >= 0 &&
+    parsedPrice < PRICE_RANGES.length
+      ? parsedPrice
+      : null;
+
   const [filters, setFilters] = useState<FilterState>({
     categoryId: searchParams.get("category") ?? "",
     sort: (searchParams.get("sort") as SortValue) ?? "newest",
-    priceRange:
-      searchParams.get("priceRange") !== null
-        ? Number(searchParams.get("priceRange"))
-        : null,
+    priceRange: safePriceRange,
     isFeatured: searchParams.get("featured") === "true",
-    inStockOnly: false,
+    inStockOnly: searchParams.get("inStockOnly") === "true",
   });
 
-  const [page, setPage] = useState(Number(searchParams.get("page") ?? 1));
+  const [page, setPage] = useState(safePage);
   const [categories, setCategories] = useState<Category[]>([]);
   const [result, setResult] = useState<PaginatedResponse<Product> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -73,6 +82,7 @@ export default function ShopPage() {
     if (filters.priceRange !== null)
       p.set("priceRange", String(filters.priceRange));
     if (filters.isFeatured) p.set("featured", "true");
+    if (filters.inStockOnly) p.set("inStockOnly", "true");
     if (page > 1) p.set("page", String(page));
     setSearchParams(p, { replace: true });
   }, [debouncedSearch, filters, page, setSearchParams]);

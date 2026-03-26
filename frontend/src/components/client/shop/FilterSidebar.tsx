@@ -47,6 +47,7 @@ export function FilterSidebar({
                   filters.priceRange !== null,
                   filters.isFeatured,
                   filters.inStockOnly,
+                  filters.sort !== "newest",
                 ].filter(Boolean).length
               }
             </span>
