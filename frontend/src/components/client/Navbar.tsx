@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import { categoryApi } from "@/hooks/api";
 import type { Category } from "@/types/product";
-
+import Logo from "@/assets/green-logo.png";
 // ─── Hooks placeholder — thay bằng hook thực của project ─────────────────────
 
 interface AuthUser {
@@ -119,9 +119,7 @@ function UserDropdown({
         <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700">
           {user.name.charAt(0).toUpperCase()}
         </div>
-        <span className="hidden max-w-[80px] truncate sm:inline">
-          {user.name}
-        </span>
+        <span className="hidden max-w-20 truncate sm:inline">{user.name}</span>
         <ChevronDown
           size={12}
           className={cn(
@@ -177,7 +175,7 @@ function UserDropdown({
                 setOpen(false);
                 logout();
               }}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 transition-colors hover:bg-red-50"
+              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/20"
             >
               <LogOut size={14} /> Đăng xuất
             </button>
@@ -205,6 +203,7 @@ function CategoryStrip({ categories }: { categories: Category[] }) {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         id ? next.set("category", id) : next.delete("category");
         next.delete("page");
         return next;
@@ -256,6 +255,7 @@ export default function Navbar() {
 
   // Close mobile menu on route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileOpen(false);
     setSearchOpen(false);
   }, [pathname]);
@@ -280,10 +280,11 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               to="/"
-              className="flex shrink-0 items-center gap-2 font-bold text-emerald-600"
+              aria-label="GreenMart"
+              className="flex shrink-0 items-center gap-2 font-bold text-primary"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm text-white">
-                🌿
+              <span className="flex h-12 w-12 items-center justify-center p-1 rounded-full border-2 border-primary text-sm text-white">
+                <img src={Logo} alt="" className="object-cover" />
               </span>
               <span className="hidden text-base sm:inline">GreenMart</span>
             </Link>
@@ -297,7 +298,7 @@ export default function Navbar() {
                   className={cn(
                     "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                     pathname === to
-                      ? "bg-emerald-50 text-emerald-700"
+                      ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
@@ -328,7 +329,7 @@ export default function Navbar() {
               >
                 <ShoppingCart size={19} />
                 {cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
