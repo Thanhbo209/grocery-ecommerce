@@ -64,8 +64,16 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <div
+      role="link"
+      tabIndex={0}
       onClick={() => navigate(`/product/${product._id}`)}
-      className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate(`/product/${product._id}`);
+        }
+      }}
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-gray-50">
@@ -279,6 +287,7 @@ export default function CategoryPage() {
   const [loadingCat, setLoadingCat] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [catError, setCatError] = useState<string | null>(null);
+  const [productError, setProductError] = useState<string | null>(null);
   const [sort, setSort] = useState<SortValue>("newest");
   const [page, setPage] = useState(1);
 
@@ -312,6 +321,7 @@ export default function CategoryPage() {
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoadingProducts(true);
+    setProductError(null);
     productApi
       .getAll({
         search: "",
@@ -326,7 +336,10 @@ export default function CategoryPage() {
       .then((data) => {
         if (!cancelled) setResult(data);
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.error(err);
+        if (!cancelled) setProductError("Không thể tải sản phẩm");
+      })
       .finally(() => {
         if (!cancelled) setLoadingProducts(false);
       });

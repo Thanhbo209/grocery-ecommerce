@@ -197,7 +197,9 @@ export default function Navbar({
               AD
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-xs font-semibold  leading-none">Admin</p>
+              <p className="text-xs font-semibold text-foreground  leading-none">
+                Admin
+              </p>
               <p className="text-[10px] text-muted-foreground mt-0.5">
                 Quản trị viên
               </p>

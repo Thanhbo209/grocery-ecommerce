@@ -25,7 +25,9 @@ export const categoryService = {
 
     const category = await categoryRepository.findBySlug(slug);
 
-    if (!category) throw new Error("Category not found");
+    if (!category || !category.isActive) {
+      throw new Error("Category not found");
+    }
 
     return category;
   },

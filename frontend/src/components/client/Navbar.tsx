@@ -192,7 +192,7 @@ function CategoryStrip({ categories }: { categories: Category[] }) {
   const { pathname } = useLocation();
 
   // Chỉ hiện ở trang chủ "/"
-  if (pathname !== "/") return null;
+  if (pathname !== "/" && !pathname.startsWith("/category/")) return null;
 
   // Xác định slug đang active từ pathname
   const activeSlug = pathname.startsWith("/category/")

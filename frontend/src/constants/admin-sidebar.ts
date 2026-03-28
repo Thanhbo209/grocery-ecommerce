@@ -1,10 +1,10 @@
 import {
   BarChart3,
   CarrotIcon,
-  FlaskConical,
+  CreditCardIcon,
   LayoutDashboard,
+  ScrollText,
   Settings,
-  ShoppingBasket,
   Users,
 } from "lucide-react";
 
@@ -14,21 +14,21 @@ export const ADMIN_NAVITEMS = [
     icon: LayoutDashboard,
     href: "/admin/dashboard",
   },
+  { label: "Người dùng", icon: Users, href: "/admin/users" },
   {
     label: "Sản Phẩm",
     icon: CarrotIcon,
     href: "/admin/products",
     badge: "12",
   },
-  { label: "Người dùng", icon: FlaskConical, href: "/admin/4" },
   {
-    label: "Nguyên Liệu",
-    icon: ShoppingBasket,
+    label: "Đơn Hàng",
+    icon: ScrollText,
     href: "#",
     badge: "3",
     badgeWarning: true,
   },
-  { label: "Người Dùng", icon: Users, href: "/admin/1" },
+  { label: "Thanh Toán", icon: CreditCardIcon, href: "/admin/payments" },
   { label: "Báo Cáo", icon: BarChart3, href: "/admin/2" },
   { label: "Cài Đặt", icon: Settings, href: "/admin/settings" },
 ];
