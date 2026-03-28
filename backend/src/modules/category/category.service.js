@@ -20,6 +20,16 @@ export const categoryService = {
     return categoryRepository.findAll({ isActive: true });
   },
 
+  async getCategoryBySlug(slug) {
+    if (!slug) throw new Error("Slug is required");
+
+    const category = await categoryRepository.findBySlug(slug);
+
+    if (!category) throw new Error("Category not found");
+
+    return category;
+  },
+
   async getCategoryById(id) {
     const category = await categoryRepository.findById(id);
     if (!category) throw new Error("Category not found");

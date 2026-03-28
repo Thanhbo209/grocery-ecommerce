@@ -20,6 +20,15 @@ export const categoryController = {
     }
   },
 
+  async getCategoryBySlug(req, res) {
+    try {
+      const category = await categoryService.getCategoryBySlug(req.params.slug);
+      res.json(category);
+    } catch (err) {
+      res.status(404).json({ message: err.message });
+    }
+  },
+
   async getById(req, res) {
     try {
       const data = await categoryService.getCategoryById(req.params.id);

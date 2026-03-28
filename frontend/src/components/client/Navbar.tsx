@@ -186,54 +186,47 @@ function UserDropdown({
   );
 }
 
-/** Thanh danh mục bên dưới navbar — chỉ hiện ở route "/" */
+// ─── CategoryStrip — navigate sang /category/:slug ────────────────────────────
+
 function CategoryStrip({ categories }: { categories: Category[] }) {
   const { pathname } = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeId = searchParams.get("category") ?? "";
 
+  // Chỉ hiện ở trang chủ "/"
   if (pathname !== "/") return null;
 
-  const items: Pick<Category, "_id" | "name">[] = [
-    { _id: "", name: "Tất Cả" },
+  // Xác định slug đang active từ pathname
+  const activeSlug = pathname.startsWith("/category/")
+    ? pathname.replace("/category/", "")
+    : "";
+
+  const items: Pick<Category, "_id" | "name" | "slug">[] = [
+    { _id: "", name: "Tất Cả", slug: "" },
     ...categories,
   ];
-
-  const handleSelect = (id: string) => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        id ? next.set("category", id) : next.delete("category");
-        next.delete("page");
-        return next;
-      },
-      { replace: true },
-    );
-  };
 
   return (
     <div className="border-b border-border/50 bg-background">
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex h-9 items-center gap-0.5 overflow-x-auto scrollbar-hide">
           {items.map((cat) => {
-            const active = cat._id === activeId;
+            const active = cat.slug === activeSlug;
             return (
-              <button
-                key={cat._id}
-                onClick={() => handleSelect(cat._id)}
+              <Link
+                key={cat._id || "all"}
+                // "Tất Cả" → /shop, còn lại → /category/:slug
+                to={cat.slug ? `/category/${cat.slug}` : "/"}
                 className={cn(
                   "relative shrink-0 whitespace-nowrap rounded-sm px-3 py-1 text-xs font-medium transition-colors",
                   active
-                    ? "bg-emerald-50 text-emerald-700"
+                    ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
                 {cat.name}
                 {active && (
-                  <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-emerald-500" />
+                  <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary" />
                 )}
-              </button>
+              </Link>
             );
           })}
         </div>
@@ -387,7 +380,7 @@ export default function Navbar() {
           />
 
           {/* Drawer */}
-          <nav className="fixed left-0 right-0 top-[65px] z-40 border-b border-border bg-background shadow-lg md:hidden">
+          <nav className="fixed left-0 right-0 top-16.25 z-40 border-b border-border bg-background shadow-lg md:hidden">
             <div className="flex flex-col divide-y divide-border">
               {NAV_LINKS.map(({ to, label }) => (
                 <Link

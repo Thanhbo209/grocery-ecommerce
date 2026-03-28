@@ -344,4 +344,10 @@ export const categoryApi = {
 
   delete: (id: string): Promise<void> =>
     request<void>(`/categories/${id}`, { method: "DELETE" }),
+
+  // GET /api/categories/:slug — lấy 1 category theo slug
+  getBySlug: async (slug: string): Promise<Category> => {
+    const raw = await request<RawCategory>(`/categories/${slug}`);
+    return normalizeCategory(raw) as Category;
+  },
 };
