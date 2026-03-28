@@ -95,20 +95,11 @@ export default function Sidebar({
                       {item.label}
                     </span>
                     {item.badge && (
-                      <span
-                        className={[
-                          "text-[10px] font-semibold px-2 py-0.5 rounded-full",
-                          item.active
-                            ? "bg-white/25 text-white"
-                            : item.badgeWarning
-                              ? "bg-chart-5/10 text-chart-5 dark:bg-amber-900/40 dark:text-amber-400"
-                              : "bg-violet-100 text-violet-600 dark:bg-violet-900/40 dark:text-violet-400",
-                        ].join(" ")}
-                      >
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full">
                         {item.badge}
                       </span>
                     )}
-                    {!item.badge && !item.active && (
+                    {!item.badge && (
                       <ChevronRight
                         size={14}
                         className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"

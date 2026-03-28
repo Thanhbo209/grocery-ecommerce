@@ -10,6 +10,7 @@ import DashboardPage from "@/pages/admin/Dashboard";
 import ProductsPage from "@/pages/admin/ProductsPage";
 import ProductDetailPage from "@/pages/client/ProductDetailPage";
 import ShopPage from "@/pages/client/ShopPage";
+import CategoryPage from "@/pages/category/CategoryPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route element={<ClientLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/shop" element={<ShopPage />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />

@@ -26,7 +26,7 @@ export default function AdminLayout() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <div className="flex h-screen overflow-hidden bg-background transition-colors duration-300">
+      <div className="flex h-screen overflow-hidden bg-sidebar transition-colors duration-300">
         {/* Sidebar */}
         <Sidebar
           collapsed={collapsed}

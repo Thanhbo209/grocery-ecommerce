@@ -10,6 +10,7 @@ const router = express.Router();
 
 // PUBLIC
 router.get("/", categoryController.getAll);
+router.get("/:slug", categoryController.getCategoryBySlug);
 router.get("/:id", categoryController.getById);
 
 // PROTECTED - ADMIN ONLY
