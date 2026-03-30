@@ -9,6 +9,7 @@ import {
 import { cartApi } from "@/api/CartApi";
 import { toast } from "sonner";
 import type { CartAction, CartState } from "@/types/cart";
+import { useAuth } from "@/hooks/useAuth";
 
 const initialState: CartState = {
   items: [],
@@ -55,11 +56,11 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  const fetchCart = useCallback(async () => {
-    const token =
-      localStorage.getItem("token") ?? localStorage.getItem("accessToken");
-    if (!token) return;
+  // Lấy token trực tiếp từ AuthContext — không cần đọc localStorage thủ công
+  // Khi user login/logout, AuthContext cập nhật token → CartProvider tự re-run effect
+  const { token, loading: authLoading } = useAuth();
 
+  const fetchCart = useCallback(async () => {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
       const res = await cartApi.getCart();
@@ -69,23 +70,36 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const addToCart = useCallback(async (productId: string, quantity = 1) => {
-    const token =
-      localStorage.getItem("token") ?? localStorage.getItem("accessToken");
-    if (!token) {
-      toast.error("Vui lòng đăng nhập để thêm vào giỏ hàng");
-      return;
+  // Re-fetch khi token xuất hiện (login), clear khi token mất (logout)
+  // authLoading guard: tránh fetch trước khi AuthProvider đọc xong localStorage
+  useEffect(() => {
+    if (authLoading) return;
+
+    if (token) {
+      fetchCart();
+    } else {
+      dispatch({ type: "CLEAR" });
     }
-    try {
-      const res = await cartApi.addToCart({ productId, quantity });
-      dispatch({ type: "SET_CART", payload: res.data as CartState });
-      toast.success("Đã thêm vào giỏ hàng");
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Không thể thêm vào giỏ hàng";
-      toast.error(msg);
-    }
-  }, []);
+  }, [token, authLoading, fetchCart]);
+
+  const addToCart = useCallback(
+    async (productId: string, quantity = 1) => {
+      if (!token) {
+        toast.error("Vui lòng đăng nhập để thêm vào giỏ hàng");
+        return;
+      }
+      try {
+        const res = await cartApi.addToCart({ productId, quantity });
+        dispatch({ type: "SET_CART", payload: res.data as CartState });
+        toast.success("Đã thêm vào giỏ hàng");
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error ? err.message : "Không thể thêm vào giỏ hàng";
+        toast.error(msg);
+      }
+    },
+    [token],
+  );
 
   const updateQuantity = useCallback(
     async (productId: string, quantity: number) => {
@@ -119,11 +133,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       toast.error("Không thể xóa giỏ hàng");
     }
   }, []);
-
-  // Fetch cart on mount nếu đã login
-  useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
 
   return (
     <CartContext.Provider

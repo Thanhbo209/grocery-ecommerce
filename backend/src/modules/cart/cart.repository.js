@@ -1,3 +1,4 @@
+import Product from "../product/product.model.js";
 import Cart from "./cart.model.js";
 
 const findByUser = (userId) =>

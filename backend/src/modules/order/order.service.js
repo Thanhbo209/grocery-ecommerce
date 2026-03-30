@@ -4,7 +4,7 @@ import { orderRepository } from "./order.repository.js";
 
 const createOrder = async (
   userId,
-  { addressId, shippingAddress, paymentMethod = "COD", note },
+  { shippingAddress, paymentMethod = "COD", note },
 ) => {
   // 1. Lấy giỏ hàng và populate product
   const cart = await cartRepository.findByUser(userId);
@@ -24,13 +24,12 @@ const createOrder = async (
       );
     }
   }
-
   // 3. Snapshot items — không lưu ref sang Product
   const items = cart.items.map((item) => ({
     productId: item.product._id,
     name: item.product.name,
     thumbnail: item.product.thumbnail,
-    price: item.product.discountPrice ?? item.product.price,
+    price: item.price,
     unit: item.product.unit,
     quantity: item.quantity,
   }));
@@ -52,15 +51,36 @@ const createOrder = async (
     note,
   });
 
-  // 6. Trừ stock và clear cart song song
-  await Promise.all([
-    ...cart.items.map((item) =>
-      Product.findByIdAndUpdate(item.product._id, {
-        $inc: { stock: -item.quantity },
-      }),
+  // 6. Trừ stock với atomic check - dùng transaction nếu cần rollback
+  const stockUpdates = await Promise.all(
+    cart.items.map((item) =>
+      Product.findOneAndUpdate(
+        { _id: item.product._id, stock: { $gte: item.quantity } },
+        { $inc: { stock: -item.quantity } },
+        { new: true },
+      ),
     ),
-    cartRepository.clearCart(userId),
-  ]);
+  );
+
+  // Kiểm tra nếu có sản phẩm không đủ stock (concurrent order)
+  const failedIndex = stockUpdates.findIndex((result) => result === null);
+  if (failedIndex !== -1) {
+    // Rollback stock đã trừ
+    await Promise.all(
+      stockUpdates.slice(0, failedIndex).map((_, idx) =>
+        Product.findByIdAndUpdate(cart.items[idx].product._id, {
+          $inc: { stock: cart.items[idx].quantity },
+        }),
+      ),
+    );
+    // Xóa order đã tạo
+    await orderRepository.delete(order._id);
+    throw new Error(
+      `Sản phẩm "${cart.items[failedIndex].product.name}" đã hết hàng`,
+    );
+  }
+
+  await cartRepository.clearCart(userId);
 
   return order;
 };
@@ -95,6 +115,9 @@ const cancelOrder = async (orderId, userId) => {
     throw new Error("Chỉ có thể hủy đơn hàng đang chờ xử lý");
   }
 
+  // Cập nhật status trước để tránh double-restore nếu retry
+  const updatedOrder = await orderRepository.updateStatus(orderId, "cancelled");
+
   // Hoàn lại stock
   await Promise.all(
     order.items.map((item) =>
@@ -104,7 +127,7 @@ const cancelOrder = async (orderId, userId) => {
     ),
   );
 
-  return orderRepository.updateStatus(orderId, "cancelled");
+  return updatedOrder;
 };
 
 // ---- Admin ----
@@ -145,6 +168,7 @@ const updateOrderStatus = async (orderId, status) => {
 
   // Nếu admin cancel, hoàn lại stock
   if (status === "cancelled") {
+    const updatedOrder = await orderRepository.updateStatus(orderId, status);
     await Promise.all(
       order.items.map((item) =>
         Product.findByIdAndUpdate(item.productId, {
@@ -152,6 +176,7 @@ const updateOrderStatus = async (orderId, status) => {
         }),
       ),
     );
+    return updatedOrder;
   }
 
   return orderRepository.updateStatus(orderId, status);

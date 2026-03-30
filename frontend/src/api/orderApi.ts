@@ -18,7 +18,11 @@ export const orderApi = {
     limit?: number;
     status?: string;
   }) => {
-    const qs = new URLSearchParams(params as Record<string, string>).toString();
+    const qs = new URLSearchParams(
+      Object.entries(params ?? {}).flatMap(([key, value]) =>
+        value === undefined ? [] : [[key, String(value)]],
+      ),
+    ).toString();
     return request(`/api/orders${qs ? `?${qs}` : ""}`);
   },
 

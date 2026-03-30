@@ -1,5 +1,8 @@
 import { orderService } from "./order.service.js";
 
+// Khớp với JWT payload dùng userId (giống cart.controller)
+const getUserId = (req) => req.user.userId;
+
 const createOrder = async (req, res) => {
   try {
     const { shippingAddress, paymentMethod, note } = req.body;
@@ -17,7 +20,7 @@ const createOrder = async (req, res) => {
       });
     }
 
-    const data = await orderService.createOrder(req.user._id, {
+    const data = await orderService.createOrder(getUserId(req), {
       shippingAddress,
       paymentMethod,
       note,
@@ -43,7 +46,7 @@ const createOrder = async (req, res) => {
 const getMyOrders = async (req, res) => {
   try {
     const { page, limit, status } = req.query;
-    const data = await orderService.getMyOrders(req.user._id, {
+    const data = await orderService.getMyOrders(getUserId(req), {
       page,
       limit,
       status,
@@ -56,7 +59,10 @@ const getMyOrders = async (req, res) => {
 
 const getOrderDetail = async (req, res) => {
   try {
-    const data = await orderService.getOrderDetail(req.params.id, req.user._id);
+    const data = await orderService.getOrderDetail(
+      req.params.id,
+      getUserId(req),
+    );
     res.json({ success: true, data });
   } catch (error) {
     const status = error.message.includes("không tìm thấy") ? 404 : 500;
@@ -66,7 +72,7 @@ const getOrderDetail = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
   try {
-    const data = await orderService.cancelOrder(req.params.id, req.user._id);
+    const data = await orderService.cancelOrder(req.params.id, getUserId(req));
     res.json({ success: true, message: "Đã hủy đơn hàng", data });
   } catch (error) {
     const status = error.message.includes("không tìm thấy")
