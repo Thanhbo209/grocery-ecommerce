@@ -6,10 +6,10 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import { cartApi } from "@/api/CartApi";
 import { toast } from "sonner";
 import type { CartAction, CartState } from "@/types/cart";
 import { useAuth } from "@/hooks/useAuth";
+import { cartApi } from "@/api/cartApi";
 
 const initialState: CartState = {
   items: [],
@@ -64,7 +64,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
       const res = await cartApi.getCart();
-      dispatch({ type: "SET_CART", payload: res.data as CartState });
+      dispatch({ type: "SET_CART", payload: res as CartState });
     } catch {
       dispatch({ type: "SET_ERROR", payload: "Không thể tải giỏ hàng" });
     }
@@ -90,7 +90,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       try {
         const res = await cartApi.addToCart({ productId, quantity });
-        dispatch({ type: "SET_CART", payload: res.data as CartState });
+        dispatch({ type: "SET_CART", payload: res as CartState });
         toast.success("Đã thêm vào giỏ hàng");
       } catch (err: unknown) {
         const msg =
@@ -105,7 +105,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     async (productId: string, quantity: number) => {
       try {
         const res = await cartApi.updateItem(productId, { quantity });
-        dispatch({ type: "SET_CART", payload: res.data as CartState });
+        dispatch({ type: "SET_CART", payload: res as CartState });
       } catch (err: unknown) {
         const msg =
           err instanceof Error ? err.message : "Không thể cập nhật giỏ hàng";
@@ -118,7 +118,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const removeItem = useCallback(async (productId: string) => {
     try {
       const res = await cartApi.removeItem(productId);
-      dispatch({ type: "SET_CART", payload: res.data as CartState });
+      dispatch({ type: "SET_CART", payload: res as CartState });
       toast.success("Đã xóa sản phẩm");
     } catch {
       toast.error("Không thể xóa sản phẩm");

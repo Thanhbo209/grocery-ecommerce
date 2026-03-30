@@ -17,11 +17,11 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { categoryApi } from "@/hooks/api";
-import type { Category } from "@/types/product";
 import Logo from "@/assets/green-logo.png";
 import { CategoryStrip } from "@/components/client/CategoryStrip";
 import { useCart } from "@/context/CartContext";
+import { categoryApi } from "@/api/categoryApi";
+import type { Category } from "@/types/category";
 // ─── Hooks placeholder — thay bằng hook thực của project ─────────────────────
 
 interface AuthUser {

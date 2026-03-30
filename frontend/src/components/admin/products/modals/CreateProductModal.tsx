@@ -10,7 +10,7 @@ import {
 import { ProductForm } from "@/components/admin/products/ProductForm";
 import { formValuesToPayload } from "@/components/admin/products/ProductForm";
 import type { ProductFormValues } from "@/components/admin/products/ProductForm";
-import type { Category } from "@/types/product";
+import type { Category } from "@/types/category";
 
 const FORM_ID = "create-product-form";
 
@@ -34,7 +34,7 @@ export function CreateProductModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-150 gap-0 overflow-hidden border-border  p-0 ">
+      <DialogContent className="max-w-150 gap-0 overflow-hidden border-border p-0 ">
         <DialogHeader className="border-b border-border px-6 py-5">
           <DialogTitle className="text-base font-semibold ">
             Thêm sản phẩm mới

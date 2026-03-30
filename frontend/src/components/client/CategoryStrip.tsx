@@ -1,7 +1,7 @@
 // ─── CategoryStrip — navigate sang /category/:slug ────────────────────────────
 
 import { cn } from "@/lib/utils";
-import type { Category } from "@/types/product";
+import type { Category } from "@/types/category";
 import { Link, useLocation } from "react-router-dom";
 
 export function CategoryStrip({ categories }: { categories: Category[] }) {

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { productApi } from "@/hooks/api";
 import type {
   CreateProductPayload,
   UpdateProductPayload,
 } from "../types/product";
+import { productApi } from "@/api/productApi";
 
 interface MutationState {
   isLoading: boolean;

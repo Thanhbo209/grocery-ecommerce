@@ -1,33 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  Plus,
-  RotateCcw,
-  Star,
-  Tag,
-} from "lucide-react";
+import { ArrowRight, Loader2, Plus, RotateCcw, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { categoryApi, productApi } from "@/hooks/api";
 import { formatNumber, formatPrice, UNIT_LABEL } from "@/lib/format";
-import type { Category, PaginatedResponse, Product } from "@/types/product";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const PLACEHOLDER = "https://placehold.co/400x400/f0fdf4/166534?text=SP";
-const PAGE_SIZE = 24; // 4 hàng × 6 cột
-
-function productImg(p: Product) {
-  return p.thumbnail ?? p.images?.[0] ?? PLACEHOLDER;
-}
-
-function discountPct(price: number, dp: number) {
-  return Math.round(((price - dp) / price) * 100);
-}
+import type { PaginatedResponse, Product } from "@/types/product";
+import { discountPct, productImg } from "@/lib/helper";
+import { CardSkeleton } from "@/components/category/CategorySkeleton";
+import { PAGE_SIZE } from "@/constants/shop-page";
+import { Pagination } from "@/components/category/CategoryPagination";
+import { OtherCategories } from "@/components/category/OtherCategories";
+import type { Category } from "@/types/category";
+import { productApi } from "@/api/productApi";
+import { categoryApi } from "@/api/categoryApi";
 
 // ─── Sort options ─────────────────────────────────────────────────────────────
 
@@ -76,7 +61,7 @@ function ProductCard({ product }: { product: Product }) {
       className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div className="relative aspect-square overflow-hidden bg-card">
         <img
           src={productImg(product)}
           alt={product.name}
@@ -88,7 +73,7 @@ function ProductCard({ product }: { product: Product }) {
           </span>
         )}
         {product.discountPrice && (
-          <span className="absolute right-2 top-2 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+          <span className="absolute right-2 top-2 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-white">
             -{discountPct(product.price, product.discountPrice)}%
           </span>
         )}
@@ -152,129 +137,6 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-
-function CardSkeleton() {
-  return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="aspect-square animate-pulse bg-muted" />
-      <div className="space-y-2 p-3">
-        <div className="h-3.5 w-4/5 animate-pulse rounded bg-muted" />
-        <div className="h-3 w-3/5 animate-pulse rounded bg-muted" />
-        <div className="mt-2 flex justify-between">
-          <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
-          <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Pagination ───────────────────────────────────────────────────────────────
-
-function Pagination({
-  page,
-  totalPages,
-  onChange,
-}: {
-  page: number;
-  totalPages: number;
-  onChange: (p: number) => void;
-}) {
-  if (totalPages <= 1) return null;
-
-  const pages: (number | "...")[] = [];
-  if (totalPages <= 7) {
-    for (let i = 1; i <= totalPages; i++) pages.push(i);
-  } else {
-    pages.push(1);
-    if (page > 3) pages.push("...");
-    for (
-      let i = Math.max(2, page - 1);
-      i <= Math.min(totalPages - 1, page + 1);
-      i++
-    )
-      pages.push(i);
-    if (page < totalPages - 2) pages.push("...");
-    pages.push(totalPages);
-  }
-
-  return (
-    <div className="flex items-center justify-center gap-1.5 py-10">
-      <button
-        onClick={() => onChange(page - 1)}
-        disabled={page === 1}
-        className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background hover:bg-muted disabled:opacity-40 transition-colors"
-      >
-        <ChevronLeft size={16} />
-      </button>
-      {pages.map((p, i) =>
-        p === "..." ? (
-          <span
-            key={`e-${i}`}
-            className="w-9 text-center text-sm text-muted-foreground"
-          >
-            …
-          </span>
-        ) : (
-          <button
-            key={p}
-            onClick={() => onChange(p)}
-            className={cn(
-              "h-9 w-9 rounded-xl text-sm font-medium transition-colors",
-              p === page
-                ? "bg-primary text-primary-foreground"
-                : "border border-border bg-background hover:bg-muted",
-            )}
-          >
-            {p}
-          </button>
-        ),
-      )}
-      <button
-        onClick={() => onChange(page + 1)}
-        disabled={page === totalPages}
-        className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background hover:bg-muted disabled:opacity-40 transition-colors"
-      >
-        <ChevronRight size={16} />
-      </button>
-    </div>
-  );
-}
-
-// ─── Other Categories strip ───────────────────────────────────────────────────
-
-function OtherCategories({
-  categories,
-  currentSlug,
-}: {
-  categories: Category[];
-  currentSlug: string;
-}) {
-  const others = categories.filter((c) => c.slug !== currentSlug && c.isActive);
-  if (!others.length) return null;
-
-  return (
-    <div className="mb-6">
-      <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        Danh mục khác
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {others.map((cat) => (
-          <Link
-            key={cat._id}
-            to={`/category/${cat.slug}`}
-            className="flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-          >
-            <Tag size={11} />
-            {cat.name}
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 export default function CategoryPage() {
@@ -287,7 +149,7 @@ export default function CategoryPage() {
   const [loadingCat, setLoadingCat] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [catError, setCatError] = useState<string | null>(null);
-  const [productError, setProductError] = useState<string | null>(null);
+  const [, setProductError] = useState<string | null>(null);
   const [sort, setSort] = useState<SortValue>("newest");
   const [page, setPage] = useState(1);
 
@@ -385,72 +247,7 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Hero Banner ── */}
-      <div className="border-b border-border bg-linear-to-r from-primary/5 via-primary/10 to-transparent">
-        <div className="mx-auto max-w-7xl px-4 py-8">
-          {/* Breadcrumb */}
-          <nav className="mb-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Link to="/" className="hover:text-foreground transition-colors">
-              Trang chủ
-            </Link>
-            <span>/</span>
-            <Link
-              to="/shop"
-              className="hover:text-foreground transition-colors"
-            >
-              Cửa hàng
-            </Link>
-            <span>/</span>
-            <span className="font-medium text-foreground">{category.name}</span>
-          </nav>
-
-          <div className="flex items-start justify-between gap-6">
-            <div>
-              {/* Category badge */}
-              <div className="mb-3 flex items-center gap-2">
-                <span className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                  <Tag size={12} /> Danh mục
-                </span>
-              </div>
-
-              <h1 className="text-3xl font-extrabold tracking-tight text-foreground lg:text-4xl">
-                {category.name}
-              </h1>
-
-              {category.description && (
-                <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                  {category.description}
-                </p>
-              )}
-
-              <p className="mt-3 text-sm text-muted-foreground">
-                {loadingProducts ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Loader2 size={12} className="animate-spin" /> Đang tải...
-                  </span>
-                ) : (
-                  <>
-                    <span className="font-semibold text-foreground">
-                      {formatNumber(total)}
-                    </span>{" "}
-                    sản phẩm
-                  </>
-                )}
-              </p>
-            </div>
-
-            {/* Link to shop */}
-            <Link
-              to="/shop"
-              className="hidden shrink-0 items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors sm:flex"
-            >
-              Tất cả sản phẩm <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl pt-20 px-4 py-8">
         {/* Sort bar + result count */}
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">

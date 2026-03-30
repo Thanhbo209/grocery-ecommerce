@@ -11,11 +11,11 @@ import {
   Plus,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { orderApi } from "@/api/OrderApi";
 import { formatPrice } from "@/lib/format";
 import { UNIT_LABEL } from "@/lib/format";
 import { productImg } from "@/lib/helper";
 import { toast } from "sonner";
+import { orderApi } from "@/api/orderApi";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

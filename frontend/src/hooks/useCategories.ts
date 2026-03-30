@@ -1,6 +1,6 @@
+import { categoryApi } from "@/api/categoryApi";
+import type { Category } from "@/types/category";
 import { useCallback, useEffect, useState } from "react";
-import { categoryApi } from "@/hooks/api";
-import type { Category } from "../types/product";
 
 interface UseCategoriesReturn {
   categories: Category[];

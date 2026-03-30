@@ -2,7 +2,7 @@ import {
   categoryApi,
   type CreateCategoryPayload,
   type UpdateCategoryPayload,
-} from "@/hooks/api";
+} from "@/api/categoryApi";
 import { useState } from "react";
 
 interface MutationState {

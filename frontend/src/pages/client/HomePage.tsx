@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { productApi } from "@/hooks/api";
 import type { Product } from "@/types/product";
 import HeroSection from "@/components/client/home/HomeHero";
 import FeaturedSection from "@/components/client/home/HomeFeatured";
 import AboutSection from "@/components/client/home/HomeAbout";
 import AllProductsSection from "@/components/client/home/ProductList";
 import PromoBanners from "@/components/client/home/HomePromoBanner";
+import { productApi } from "@/api/productApi";
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
