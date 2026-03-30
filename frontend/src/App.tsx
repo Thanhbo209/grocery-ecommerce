@@ -11,12 +11,33 @@ import ProductsPage from "@/pages/admin/ProductsPage";
 import ProductDetailPage from "@/pages/client/ProductDetailPage";
 import ShopPage from "@/pages/client/ShopPage";
 import CategoryPage from "@/pages/category/CategoryPage";
+import UserRoute from "@/context/UserRoute";
+import CartPage from "@/pages/cart/CartPage";
+import CheckoutPage from "@/pages/checkout/CheckOutPage";
 
 function App() {
   return (
     <>
       <Toaster richColors position="top-right" />
       <Routes>
+        {/* User Route */}
+        <Route
+          path="/cart"
+          element={
+            <UserRoute>
+              <CartPage />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <UserRoute>
+              <CheckoutPage />
+            </UserRoute>
+          }
+        />
         {/* PUBLIC ROUTES */}
         <Route element={<ClientLayout />}>
           <Route path="/" element={<HomePage />} />

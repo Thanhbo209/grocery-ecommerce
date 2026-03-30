@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
-const addressSchema = new mongoose.Schema({
+export const addressSchema = new mongoose.Schema({
   label: { type: String }, // "Nhà", "Công ty"
   street: { type: String, required: true },
   district: { type: String },

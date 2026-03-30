@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/static-components */
 // ─── ProductCard ──────────────────────────────────────────────────────────────
 
+import { useCart } from "@/context/CartContext";
 import { formatNumber, formatPrice, UNIT_LABEL } from "@/lib/format";
 import { discountPct, productImg } from "@/lib/helper";
 import type { Product } from "@/types/product";
-import { Plus, Star } from "lucide-react";
+import { Check, Plus, Star } from "lucide-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export function ProductCard({
@@ -14,10 +17,50 @@ export function ProductCard({
   view: "grid" | "list";
 }) {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const [added, setAdded] = useState(false);
+
   const img = productImg(product);
   const effectivePrice = product.discountPrice ?? product.price;
   const unit = UNIT_LABEL[product.unit] ?? product.unit;
   const outOfStock = product.stock === 0;
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (outOfStock || added) return;
+
+    await addToCart(product._id, 1);
+
+    // Flash "đã thêm" feedback
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
+
+  // ─── Add button shared ─────────────────────────────────────────────────────
+  const AddButton = ({ size = "md" }: { size?: "sm" | "md" }) => {
+    const dim = size === "sm" ? "h-7 w-7" : "h-8 w-8";
+    const iconSize = size === "sm" ? 13 : 15;
+
+    return (
+      <button
+        disabled={outOfStock}
+        onClick={handleAddToCart}
+        title={outOfStock ? "Hết hàng" : "Thêm vào giỏ"}
+        className={`flex ${dim} shrink-0 items-center justify-center rounded-full transition-all disabled:opacity-40 ${
+          added
+            ? "bg-emerald-500 text-white scale-95"
+            : "bg-primary text-primary-foreground hover:bg-primary/90"
+        }`}
+      >
+        {added ? (
+          <Check size={iconSize} strokeWidth={2.5} />
+        ) : (
+          <Plus size={iconSize} />
+        )}
+      </button>
+    );
+  };
 
   if (view === "list") {
     return (
@@ -173,15 +216,7 @@ export function ProductCard({
               )}
             </p>
           </div>
-          <button
-            disabled={outOfStock}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40"
-          >
-            <Plus size={14} />
-          </button>
+          <AddButton size="sm" />
         </div>
       </div>
     </div>
