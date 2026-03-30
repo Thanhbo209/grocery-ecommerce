@@ -71,7 +71,12 @@ function AllProductCard({ product }: { product: Product }) {
             )}
           </div>
           <Button
+            type="button"
             disabled={product.stock === 0}
+            onClick={(e) => {
+              e.stopPropagation();
+              // Add to cart logic here
+            }}
             className="flex h-7 w-7 items-center justify-center bg-primary text-white hover:bg-emerald-700 disabled:opacity-40"
           >
             <Plus size={14} />

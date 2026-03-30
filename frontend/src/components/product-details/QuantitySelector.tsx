@@ -1,5 +1,3 @@
-// ─── Quantity Selector ────────────────────────────────────────────────────────
-
 import { Minus, Plus } from "lucide-react";
 
 export function QuantitySelector({
@@ -14,6 +12,7 @@ export function QuantitySelector({
   return (
     <div className="flex items-center gap-0 rounded-xl border border-border overflow-hidden w-fit">
       <button
+        type="button"
         onClick={() => onChange(Math.max(1, value - 1))}
         disabled={value <= 1}
         className="flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
@@ -24,6 +23,7 @@ export function QuantitySelector({
         {value}
       </span>
       <button
+        type="button"
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={value >= max}
         className="flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"

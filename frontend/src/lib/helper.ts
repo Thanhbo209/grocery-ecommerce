@@ -11,7 +11,12 @@ import type {
 
 const PLACEHOLDER = "https://placehold.co/400x400/f0fdf4/166534?text=SP";
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
-export function productImg(p: Product) {
+type ProductImageSource = {
+  thumbnail?: string;
+  images?: string[];
+};
+
+export function productImg(p: ProductImageSource) {
   return p.thumbnail ?? p.images?.[0] ?? PLACEHOLDER;
 }
 

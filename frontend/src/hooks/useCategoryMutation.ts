@@ -3,12 +3,8 @@ import {
   type CreateCategoryPayload,
   type UpdateCategoryPayload,
 } from "@/api/categoryApi";
+import type { MutationState } from "@/types/mutation-state";
 import { useState } from "react";
-
-interface MutationState {
-  isLoading: boolean;
-  error: string | null;
-}
 
 interface UseCategoryMutationReturn {
   createCategory: (payload: CreateCategoryPayload) => Promise<boolean>;

@@ -1,5 +1,3 @@
-// ─── Cart Item Row ────────────────────────────────────────────────────────────
-
 import type { useCart } from "@/context/CartContext";
 import { formatPrice, UNIT_LABEL } from "@/lib/format";
 import { productImg } from "@/lib/helper";
@@ -20,7 +18,7 @@ export function CartItemRow({
   const unit =
     UNIT_LABEL[item.product.unit as keyof typeof UNIT_LABEL] ??
     item.product.unit;
-  const img = item.product.thumbnail ?? productImg(item.product as never);
+  const img = item.product.thumbnail ?? productImg(item.product);
   const isOutOfStock = item.product.stock === 0;
   const maxQty = item.product.stock;
 
@@ -69,6 +67,8 @@ export function CartItemRow({
           <div className="flex items-center rounded-full border border-border bg-background">
             <button
               onClick={() => onUpdate(item.quantity - 1)}
+              type="button"
+              aria-label="Giảm số lượng"
               disabled={updating || item.quantity <= 1}
               className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
             >
@@ -78,6 +78,8 @@ export function CartItemRow({
               {item.quantity}
             </span>
             <button
+              type="button"
+              aria-label="Tăng số lượng"
               onClick={() => onUpdate(item.quantity + 1)}
               disabled={updating || item.quantity >= maxQty}
               className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
@@ -92,6 +94,8 @@ export function CartItemRow({
               {formatPrice(item.subtotal)}
             </p>
             <button
+              type="button"
+              aria-label="Xóa sản phẩm khỏi giỏ hàng"
               onClick={onRemove}
               disabled={updating}
               className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"

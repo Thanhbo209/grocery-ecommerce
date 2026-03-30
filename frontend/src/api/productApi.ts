@@ -51,9 +51,5 @@ export const productApi = {
   delete: (id: string): Promise<void> =>
     request<void>(`/api/products/${id}`, { method: "DELETE" }),
 
-  // /products/stats không tồn tại trên backend (Express match "stats" vào /:id)
-  // → tính từ dữ liệu đã fetch thay vì gọi API riêng
-  // GET /api/products/stats
-  // Route này phải đứng TRƯỚC /:id trong product.routes.js
   getStats: () => request<ProductStats>("/api/products/stats"),
 };

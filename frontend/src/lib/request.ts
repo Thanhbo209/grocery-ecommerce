@@ -43,9 +43,5 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
     throw new Error((json.message as string) ?? "Có lỗi xảy ra");
   }
 
-  if (json && "data" in json) {
-    return json.data as T;
-  }
-
   return json as T;
 }

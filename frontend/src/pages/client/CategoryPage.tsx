@@ -149,7 +149,7 @@ export default function CategoryPage() {
   const [loadingCat, setLoadingCat] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [catError, setCatError] = useState<string | null>(null);
-  const [, setProductError] = useState<string | null>(null);
+  const [productError, setProductError] = useState<string | null>(null);
   const [sort, setSort] = useState<SortValue>("newest");
   const [page, setPage] = useState(1);
 
@@ -187,7 +187,7 @@ export default function CategoryPage() {
     productApi
       .getAll({
         search: "",
-        category: category._id,
+        category: category._id ?? "",
         isActive: true,
         isFeatured: "",
         sortField: sortOpt.sortField,
@@ -216,7 +216,6 @@ export default function CategoryPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ── Loading category ──
   if (loadingCat) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -225,7 +224,6 @@ export default function CategoryPage() {
     );
   }
 
-  // ── Category not found ──
   if (catError || !category) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
@@ -293,6 +291,10 @@ export default function CategoryPage() {
             {Array.from({ length: PAGE_SIZE }, (_, i) => (
               <CardSkeleton key={i} />
             ))}
+          </div>
+        ) : productError ? (
+          <div className="py-24 text-center text-sm text-destructive">
+            {productError}
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">

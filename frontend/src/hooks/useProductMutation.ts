@@ -4,11 +4,7 @@ import type {
   UpdateProductPayload,
 } from "../types/product";
 import { productApi } from "@/api/productApi";
-
-interface MutationState {
-  isLoading: boolean;
-  error: string | null;
-}
+import type { MutationState } from "@/types/mutation-state";
 
 interface UseProductMutationReturn {
   createProduct: (payload: CreateProductPayload) => Promise<boolean>;
