@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils";
 import { categoryApi } from "@/hooks/api";
 import type { Category } from "@/types/product";
 import Logo from "@/assets/green-logo.png";
+import { CategoryStrip } from "@/components/client/CategoryStrip";
+import { useCart } from "@/context/CartContext";
 // ─── Hooks placeholder — thay bằng hook thực của project ─────────────────────
 
 interface AuthUser {
@@ -43,13 +45,6 @@ function useAuth() {
 
   return { user, logout };
 }
-
-function useCartCount(): number {
-  // TODO: replace with real cart store selector
-  return 0;
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
 
 /** Inline search form — dùng cả desktop lẫn mobile */
 function SearchForm({
@@ -186,62 +181,12 @@ function UserDropdown({
   );
 }
 
-// ─── CategoryStrip — navigate sang /category/:slug ────────────────────────────
-
-function CategoryStrip({ categories }: { categories: Category[] }) {
-  const { pathname } = useLocation();
-
-  // Chỉ hiện ở trang chủ "/"
-  if (pathname !== "/" && !pathname.startsWith("/category/")) return null;
-
-  // Xác định slug đang active từ pathname
-  const activeSlug = pathname.startsWith("/category/")
-    ? pathname.replace("/category/", "")
-    : "";
-
-  const items: Pick<Category, "_id" | "name" | "slug">[] = [
-    { _id: "", name: "Tất Cả", slug: "" },
-    ...categories,
-  ];
-
-  return (
-    <div className="border-b border-border/50 bg-background">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="flex h-9 items-center gap-0.5 overflow-x-auto scrollbar-hide">
-          {items.map((cat) => {
-            const active = cat.slug === activeSlug;
-            return (
-              <Link
-                key={cat._id || "all"}
-                // "Tất Cả" → /shop, còn lại → /category/:slug
-                to={cat.slug ? `/category/${cat.slug}` : "/"}
-                className={cn(
-                  "relative shrink-0 whitespace-nowrap rounded-sm px-3 py-1 text-xs font-medium transition-colors",
-                  active
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                {cat.name}
-                {active && (
-                  <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary" />
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Main Navbar ──────────────────────────────────────────────────────────────
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const cartCount = useCartCount();
   const { pathname } = useLocation();
-
+  const { totalItems } = useCart();
   const [categories, setCategories] = useState<Category[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -321,9 +266,9 @@ export default function Navbar() {
                 className="relative flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
               >
                 <ShoppingCart size={19} />
-                {cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
-                    {cartCount > 99 ? "99+" : cartCount}
+                {totalItems > 0 && (
+                  <span className="absolute -right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
+                    {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
               </Link>

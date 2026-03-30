@@ -7,6 +7,8 @@ import { UserRepository } from "./modules/user/user.repository.js";
 import { AuthService } from "./modules/auth/auth.service.js";
 import { AuthController } from "./modules/auth/auth.controller.js";
 import { createAuthRouter } from "./modules/auth/auth.route.js";
+import cartRoute from "./modules/cart/cart.route.js";
+import orderRoute from "./modules/order/order.route.js";
 import categoryRoutes from "./modules/category/category.route.js";
 import productRoutes from "./modules/product/product.routes.js";
 
@@ -39,6 +41,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", createAuthRouter(authController));
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoute);
+app.use("/api/orders", orderRoute);
 // start server
 const startServer = async () => {
   await connectDB(connectionString);
