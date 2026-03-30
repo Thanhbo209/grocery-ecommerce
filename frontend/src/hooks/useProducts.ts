@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { productApi } from "@/hooks/api";
 import type {
   PaginatedResponse,
   Product,
   ProductFilters,
 } from "../types/product";
+import { productApi } from "@/api/productApi";
 
 const DEFAULT_FILTERS: ProductFilters = {
   search: "",

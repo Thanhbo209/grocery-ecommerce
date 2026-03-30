@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/static-components */
 // ─── ProductCard ──────────────────────────────────────────────────────────────
 
+import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { formatNumber, formatPrice, UNIT_LABEL } from "@/lib/format";
 import { discountPct, productImg } from "@/lib/helper";
@@ -43,11 +44,11 @@ export function ProductCard({
     const iconSize = size === "sm" ? 13 : 15;
 
     return (
-      <button
+      <Button
         disabled={outOfStock}
         onClick={handleAddToCart}
         title={outOfStock ? "Hết hàng" : "Thêm vào giỏ"}
-        className={`flex ${dim} shrink-0 items-center justify-center rounded-full transition-all disabled:opacity-40 ${
+        className={`flex ${dim} shrink-0 items-center justify-center  transition-all disabled:opacity-40 ${
           added
             ? "bg-emerald-500 text-white scale-95"
             : "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -58,7 +59,7 @@ export function ProductCard({
         ) : (
           <Plus size={iconSize} />
         )}
-      </button>
+      </Button>
     );
   };
 

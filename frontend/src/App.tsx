@@ -10,10 +10,10 @@ import DashboardPage from "@/pages/admin/Dashboard";
 import ProductsPage from "@/pages/admin/ProductsPage";
 import ProductDetailPage from "@/pages/client/ProductDetailPage";
 import ShopPage from "@/pages/client/ShopPage";
-import CategoryPage from "@/pages/category/CategoryPage";
+import CategoryPage from "@/pages/client/CategoryPage";
 import UserRoute from "@/context/UserRoute";
-import CartPage from "@/pages/cart/CartPage";
-import CheckoutPage from "@/pages/checkout/CheckOutPage";
+import CartPage from "@/pages/client/CartPage";
+import CheckoutPage from "@/pages/client/CheckOutPage";
 
 function App() {
   return (

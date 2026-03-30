@@ -1,24 +1,12 @@
 import { useEffect, useState } from "react";
-import { productApi } from "@/hooks/api";
-import type { ProductFilters, ProductStats } from "../types/product";
+import type { ProductStats } from "../types/product";
+import { productApi } from "@/api/productApi";
 
 interface UseProductStatsReturn {
   stats: ProductStats | null;
   isLoading: boolean;
   refresh: () => void;
 }
-
-// Filters tối giản chỉ để gọi getStats — không cần lọc gì
-const STATS_FILTERS: ProductFilters = {
-  search: "",
-  category: "",
-  isActive: "",
-  isFeatured: "",
-  sortField: "createdAt",
-  sortOrder: "desc",
-  page: 1,
-  pageSize: 1000,
-};
 
 export function useProductStats(): UseProductStatsReturn {
   const [stats, setStats] = useState<ProductStats | null>(null);
@@ -27,7 +15,7 @@ export function useProductStats(): UseProductStatsReturn {
   const fetchStats = () => {
     setIsLoading(true);
     productApi
-      .getStats(STATS_FILTERS)
+      .getStats()
       .then(setStats)
       .catch(console.error)
       .finally(() => setIsLoading(false));

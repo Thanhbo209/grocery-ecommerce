@@ -1,14 +1,10 @@
 import { useState } from "react";
-import { productApi } from "@/hooks/api";
 import type {
   CreateProductPayload,
   UpdateProductPayload,
 } from "../types/product";
-
-interface MutationState {
-  isLoading: boolean;
-  error: string | null;
-}
+import { productApi } from "@/api/productApi";
+import type { MutationState } from "@/types/mutation-state";
 
 interface UseProductMutationReturn {
   createProduct: (payload: CreateProductPayload) => Promise<boolean>;

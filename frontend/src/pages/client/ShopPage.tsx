@@ -11,10 +11,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { categoryApi, productApi } from "@/hooks/api";
+
 import { formatNumber } from "@/lib/format";
 import type {
-  Category,
   PaginatedResponse,
   Product,
   ProductFilters,
@@ -35,6 +34,9 @@ import {
 import { ProductSkeleton } from "@/components/client/shop/ProductSkeleton";
 import { Pagination } from "@/components/client/shop/Pagination";
 import { ActiveFilterBadges } from "@/components/client/shop/ActiveFilter";
+import type { Category } from "@/types/category";
+import { categoryApi } from "@/api/categoryApi";
+import { productApi } from "@/api/productApi";
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams();
