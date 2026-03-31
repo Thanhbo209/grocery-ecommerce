@@ -1,7 +1,7 @@
 // ─── Related Products ─────────────────────────────────────────────────────────
 
 import { productApi } from "@/api/productApi";
-import { RelatedCard } from "@/components/product-details/RelatedCard";
+import { RelatedCard } from "@/components/client/product-details/RelatedCard";
 import type { Product } from "@/types/product";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";

@@ -1,5 +1,5 @@
 // types/auth.ts
-export interface User {
+export interface AuthUser {
   _id: string;
   email: string;
   name: string;
@@ -7,9 +7,9 @@ export interface User {
 }
 
 export interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   token: string | null;
   loading: boolean;
-  login: (user: User, token: string) => void;
+  login: (user: AuthUser, token: string) => void;
   logout: () => void;
 }
