@@ -1,6 +1,7 @@
 // ─── 3. FEATURED PRODUCTS ─────────────────────────────────────────────────────
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/types/product";
 import { ArrowRight, ChevronLeft, ChevronRight, Plus } from "lucide-react";
@@ -47,9 +48,9 @@ function FeaturedCard({ product }: { product: Product }) {
               </p>
             )}
           </div>
-          <button className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white hover:scale-105">
+          <Button className="flex h-7 w-7 items-center justify-center  bg-primary text-white hover:scale-105">
             <Plus size={14} />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

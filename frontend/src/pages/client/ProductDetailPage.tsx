@@ -16,13 +16,13 @@ import { formatNumber, formatPrice, UNIT_LABEL } from "@/lib/format";
 
 import type { Product } from "@/types/product";
 import { productApi } from "@/api/productApi";
-import { ProductDetailSkeleton } from "@/components/product-details/ProductDetailSkeleton";
-import { ImageGallery } from "@/components/product-details/ImageGallery";
+import { ProductDetailSkeleton } from "@/components/client/product-details/ProductDetailSkeleton";
+import { ImageGallery } from "@/components/client/product-details/ImageGallery";
 import { discountPct } from "@/lib/helper";
-import { RelatedProducts } from "@/components/product-details/RelatedProducts";
-import { RatingStars } from "@/components/product-details/RatingStars";
-import { SpecRow } from "@/components/product-details/SpecRow";
-import { QuantitySelector } from "@/components/product-details/QuantitySelector";
+import { RelatedProducts } from "@/components/client/product-details/RelatedProducts";
+import { RatingStars } from "@/components/client/product-details/RatingStars";
+import { SpecRow } from "@/components/client/product-details/SpecRow";
+import { QuantitySelector } from "@/components/client/product-details/QuantitySelector";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();

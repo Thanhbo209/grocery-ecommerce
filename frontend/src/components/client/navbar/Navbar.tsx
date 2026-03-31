@@ -1,187 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import {
-  ChevronDown,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Package,
-  Search,
-  ShoppingCart,
-  User,
-  X,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, Search, ShoppingCart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/green-logo.png";
-import { CategoryStrip } from "@/components/client/CategoryStrip";
+import { CategoryStrip } from "@/components/client/navbar/CategoryStrip";
 import { useCart } from "@/context/CartContext";
 import { categoryApi } from "@/api/categoryApi";
 import type { Category } from "@/types/category";
-// ─── Hooks placeholder — thay bằng hook thực của project ─────────────────────
-
-interface AuthUser {
-  name: string;
-  role: "admin" | "user";
-}
-
-function useAuth() {
-  const raw = localStorage.getItem("user");
-  const token =
-    localStorage.getItem("token") ?? localStorage.getItem("accessToken");
-  const user: AuthUser | null =
-    token && raw ? (JSON.parse(raw) as AuthUser) : null;
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    window.location.href = "/";
-  };
-
-  return { user, logout };
-}
-
-/** Inline search form — dùng cả desktop lẫn mobile */
-function SearchForm({
-  className,
-  onSubmit,
-}: {
-  className?: string;
-  onSubmit?: () => void;
-}) {
-  const [searchParams] = useSearchParams();
-  const [value, setValue] = useState(searchParams.get("search") ?? "");
-  const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = value.trim();
-    navigate(q ? `/shop?search=${encodeURIComponent(q)}` : "/shop");
-    onSubmit?.();
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className={cn("relative flex items-center", className)}
-    >
-      <Search
-        size={14}
-        className="absolute left-3 text-muted-foreground pointer-events-none"
-      />
-      <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Tìm kiếm sản phẩm..."
-        className="h-9 w-full rounded-full border border-border bg-muted/50 pl-9 pr-4 text-sm outline-none placeholder:text-muted-foreground focus:border-emerald-400 focus:bg-background transition-colors"
-      />
-    </form>
-  );
-}
-
-/** Avatar + dropdown menu khi đã đăng nhập */
-function UserDropdown({
-  user,
-  logout,
-}: {
-  user: AuthUser;
-  logout: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Close on outside click
-  useEffect(() => {
-    const fn = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
-    };
-    document.addEventListener("mousedown", fn);
-    return () => document.removeEventListener("mousedown", fn);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1.5 rounded-full border border-border bg-background px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-muted"
-      >
-        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700">
-          {user.name.charAt(0).toUpperCase()}
-        </div>
-        <span className="hidden max-w-20 truncate sm:inline">{user.name}</span>
-        <ChevronDown
-          size={12}
-          className={cn(
-            "text-muted-foreground transition-transform",
-            open && "rotate-180",
-          )}
-        />
-      </button>
-
-      {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
-          {/* User info */}
-          <div className="border-b border-border px-4 py-3">
-            <p className="text-xs text-muted-foreground">Xin chào,</p>
-            <p className="truncate text-sm font-semibold">{user.name}</p>
-          </div>
-
-          {/* Menu items */}
-          <nav className="py-1.5">
-            {[
-              { to: "/profile", icon: <User size={14} />, label: "Tài khoản" },
-              {
-                to: "/orders",
-                icon: <Package size={14} />,
-                label: "Đơn hàng của tôi",
-              },
-              ...(user.role === "admin"
-                ? [
-                    {
-                      to: "/admin/dashboard",
-                      icon: <LayoutDashboard size={14} />,
-                      label: "Quản trị",
-                    },
-                  ]
-                : []),
-            ].map(({ to, icon, label }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-muted"
-              >
-                <span className="text-muted-foreground">{icon}</span>
-                {label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Logout */}
-          <div className="border-t border-border py-1.5">
-            <button
-              onClick={() => {
-                setOpen(false);
-                logout();
-              }}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/20"
-            >
-              <LogOut size={14} /> Đăng xuất
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Main Navbar ──────────────────────────────────────────────────────────────
+import { useAuth } from "@/hooks/useAuth";
+import { UserDropdown } from "@/components/client/navbar/UserDropdown";
+import { SearchForm } from "@/components/client/navbar/SearchForm";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -191,7 +19,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // Close mobile menu on route change
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileOpen(false);
@@ -211,7 +38,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ── Main bar (fixed) ── */}
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-16 items-center gap-4">
@@ -221,7 +47,7 @@ export default function Navbar() {
               aria-label="GreenMart"
               className="flex shrink-0 items-center gap-2 font-bold text-primary"
             >
-              <span className="flex h-12 w-12 items-center justify-center p-1 rounded-full border-2 border-primary text-sm text-white">
+              <span className="flex h-12 w-12 items-center justify-center p-1 rounded-full border-2 border-primary text-sm ">
                 <img src={Logo} alt="" className="object-cover" />
               </span>
               <span className="hidden text-base sm:inline">GreenMart</span>
@@ -286,7 +112,7 @@ export default function Navbar() {
                   </Link>
                   <Link
                     to="/register"
-                    className="rounded-full bg-emerald-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+                    className="rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
                   >
                     Đăng ký
                   </Link>
@@ -303,7 +129,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile search bar — drops down */}
           {searchOpen && (
             <div className="pb-3 md:hidden">
               <SearchForm onSubmit={() => setSearchOpen(false)} />
@@ -311,7 +136,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Category strip — chỉ hiện ở trang "/" */}
         <CategoryStrip categories={categories} />
       </header>
 
@@ -335,7 +159,7 @@ export default function Navbar() {
                   className={cn(
                     "px-6 py-3.5 text-sm font-medium transition-colors",
                     pathname === to
-                      ? "bg-emerald-50 text-emerald-700"
+                      ? "bg-primary/50 text-primary"
                       : "text-foreground hover:bg-muted",
                   )}
                 >
@@ -356,7 +180,7 @@ export default function Navbar() {
                   <Link
                     to="/register"
                     onClick={() => setMobileOpen(false)}
-                    className="flex-1 rounded-full bg-emerald-600 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-700"
+                    className="flex-1 rounded-full bg-primary py-2 text-center text-sm font-semibold text-white hover:bg-primary/80"
                   >
                     Đăng ký
                   </Link>

@@ -42,6 +42,10 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (json && json.success === false) {
     throw new Error((json.message as string) ?? "Có lỗi xảy ra");
   }
+  // Unwrap { success, data, message } → trả data
+  if (json && "data" in json) {
+    return json.data as T;
+  }
 
   return json as T;
 }

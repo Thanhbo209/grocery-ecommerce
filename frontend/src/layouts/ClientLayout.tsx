@@ -1,4 +1,4 @@
-import Navbar from "@/components/client/Navbar";
+import Navbar from "@/components/client/navbar/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
 
 export default function ClientLayout() {
