@@ -1,6 +1,6 @@
 // context/AuthContext.tsx
 import { createContext, useEffect, useState } from "react";
-import type { User, AuthContextType } from "@/types/auth";
+import type { AuthContextType, AuthUser } from "@/types/auth";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -8,7 +8,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false); // QUAN TRỌNG
   }, []);
 
-  const login = (userData: User, token: string) => {
+  const login = (userData: AuthUser, token: string) => {
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", token);
 
