@@ -14,6 +14,7 @@ import CategoryPage from "@/pages/client/CategoryPage";
 import UserRoute from "@/context/UserRoute";
 import CartPage from "@/pages/client/CartPage";
 import CheckoutPage from "@/pages/client/CheckOutPage";
+import ProfilePage from "@/pages/client/ProfilePage";
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
           element={
             <UserRoute>
               <CheckoutPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <UserRoute>
+              <ProfilePage />
             </UserRoute>
           }
         />

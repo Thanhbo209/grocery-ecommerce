@@ -187,3 +187,26 @@ export function buildProductQuery(filters: ProductFilters): string {
 
   return params.toString();
 }
+
+// CheckOutPage Helpers
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface ShippingAddress {
+  label?: string;
+  name: string;
+  phone: string;
+  street: string;
+  district: string;
+  city: string;
+}
+
+export function getStoredAddresses(): ShippingAddress[] {
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) return [];
+    const user = JSON.parse(raw);
+    return user.addresses ?? [];
+  } catch {
+    return [];
+  }
+}

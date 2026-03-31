@@ -64,7 +64,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
       const res = await cartApi.getCart();
-      console.log("fetchCart response:", res);
       dispatch({ type: "SET_CART", payload: res as CartState });
     } catch {
       dispatch({ type: "SET_ERROR", payload: "Không thể tải giỏ hàng" });

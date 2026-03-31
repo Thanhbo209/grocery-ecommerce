@@ -13,7 +13,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/format";
 import { UNIT_LABEL } from "@/lib/format";
-import { productImg } from "@/lib/helper";
+import { getStoredAddresses, productImg } from "@/lib/helper";
 import { toast } from "sonner";
 import { orderApi } from "@/api/orderApi";
 
@@ -30,19 +30,6 @@ interface ShippingAddress {
 
 type PaymentMethod = "COD" | "online";
 type Step = "address" | "review";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function getStoredAddresses(): ShippingAddress[] {
-  try {
-    const raw = localStorage.getItem("user");
-    if (!raw) return [];
-    const user = JSON.parse(raw);
-    return user.addresses ?? [];
-  } catch {
-    return [];
-  }
-}
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
 
