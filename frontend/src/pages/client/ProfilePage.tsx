@@ -407,8 +407,13 @@ function InfoTab({
 
 // ─── Tab: Địa chỉ ─────────────────────────────────────────────────────────────
 
-function AddressTab({ addresses: initialAddresses }: { addresses: Address[] }) {
-  const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
+function AddressTab({
+  addresses,
+  onAddressesUpdated,
+}: {
+  addresses: Address[];
+  onAddressesUpdated: (next: Address[]) => void;
+}) {
   const [modal, setModal] = useState<"add" | Address | null>(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
@@ -425,7 +430,8 @@ function AddressTab({ addresses: initialAddresses }: { addresses: Address[] }) {
           data,
         )) as unknown as Address[];
       }
-      setAddresses(updated);
+
+      onAddressesUpdated(updated);
       setModal(null);
       toast.success(
         modal === "add" ? "Đã thêm địa chỉ" : "Đã cập nhật địa chỉ",
@@ -444,7 +450,7 @@ function AddressTab({ addresses: initialAddresses }: { addresses: Address[] }) {
       const updated = (await userApi.deleteAddress(
         addressId,
       )) as unknown as Address[];
-      setAddresses(updated);
+      onAddressesUpdated(updated);
       toast.success("Đã xóa địa chỉ");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Có lỗi xảy ra");
@@ -459,7 +465,7 @@ function AddressTab({ addresses: initialAddresses }: { addresses: Address[] }) {
       const updated = (await userApi.setDefaultAddress(
         addressId,
       )) as unknown as Address[];
-      setAddresses(updated);
+      onAddressesUpdated(updated);
       toast.success("Đã đặt làm địa chỉ mặc định");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Có lỗi xảy ra");
@@ -689,7 +695,12 @@ export default function ProfilePage() {
           <InfoTab profile={profile} onUpdated={setProfile} />
         )}
         {activeTab === "addresses" && (
-          <AddressTab addresses={profile.addresses} />
+          <AddressTab
+            addresses={profile.addresses}
+            onAddressesUpdated={(addresses) =>
+              setProfile((prev) => (prev ? { ...prev, addresses } : prev))
+            }
+          />
         )}
         {activeTab === "password" && <PasswordTab />}
       </div>

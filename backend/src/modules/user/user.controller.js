@@ -5,10 +5,10 @@ const getUserId = (req) => req.user.userId;
 // ─── Profile ──────────────────────────────────────────────────────────────────
 const getAddresses = async (req, res) => {
   try {
-    const user = await userService.getById(req.user._id);
+    const user = await userService.getProfile(getUserId(req));
     res.json({
       success: true,
-      data: user.addresses || [],
+      data: user.addresses ?? [],
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

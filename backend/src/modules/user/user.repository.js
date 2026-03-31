@@ -55,11 +55,15 @@ export class UserRepository {
     );
     if (index < 0) throw new Error("Không tìm thấy địa chỉ");
 
+    const wasDefault = user.addresses[index].isDefault;
     if (addressData.isDefault) {
       user.addresses.forEach((a) => (a.isDefault = false));
     }
 
     Object.assign(user.addresses[index], addressData);
+    if (wasDefault && !user.addresses.some((a) => a.isDefault)) {
+      user.addresses[index].isDefault = true;
+    }
     await user.save();
     return user;
   }
@@ -90,7 +94,8 @@ export class UserRepository {
   async setDefaultAddress(userId, addressId) {
     const user = await User.findById(userId);
     if (!user) throw new Error("Không tìm thấy người dùng");
-
+    const target = user.addresses.find((a) => a._id.toString() === addressId);
+    if (!target) throw new Error("Không tìm thấy địa chỉ");
     user.addresses.forEach((a) => {
       a.isDefault = a._id.toString() === addressId;
     });

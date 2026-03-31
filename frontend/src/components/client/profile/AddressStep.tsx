@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin, Plus, ChevronDown } from "lucide-react";
 import { userApi } from "@/api/userApi";
 import { cn } from "@/lib/utils";
@@ -18,106 +18,18 @@ interface Props {
   onNext: () => void;
 }
 
-// ─── Form nhập tay ────────────────────────────────────────────────────────────
-
-function ManualForm({ value, onChange, onNext }: Props) {
-  const [errors, setErrors] = useState<Partial<ShippingAddress>>({});
-
-  const set =
-    (field: keyof ShippingAddress) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange({ ...value, [field]: e.target.value });
-      if (errors[field]) setErrors((p) => ({ ...p, [field]: "" }));
-    };
-
-  const validate = () => {
-    const errs: Partial<ShippingAddress> = {};
-    if (!value.name.trim()) errs.name = "Vui lòng nhập họ tên";
-    if (!value.phone.trim()) errs.phone = "Vui lòng nhập số điện thoại";
-    else if (!/^(0|\+84)\d{9}$/.test(value.phone.trim()))
-      errs.phone = "Số điện thoại không hợp lệ";
-    if (!value.street.trim()) errs.street = "Vui lòng nhập địa chỉ";
-    if (!value.city.trim()) errs.city = "Vui lòng nhập thành phố";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  const fields: {
-    key: keyof ShippingAddress;
-    label: string;
-    placeholder: string;
-    required?: boolean;
-    colSpan?: boolean;
-  }[] = [
-    {
-      key: "name",
-      label: "Họ và tên",
-      placeholder: "Nguyễn Văn A",
-      required: true,
-    },
-    {
-      key: "phone",
-      label: "Số điện thoại",
-      placeholder: "0901234567",
-      required: true,
-    },
-    {
-      key: "street",
-      label: "Địa chỉ",
-      placeholder: "123 Lê Lợi",
-      required: true,
-      colSpan: true,
-    },
-    { key: "district", label: "Quận / Huyện", placeholder: "Quận 1" },
-    {
-      key: "city",
-      label: "Tỉnh / Thành phố",
-      placeholder: "TP. Hồ Chí Minh",
-      required: true,
-    },
-  ];
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {fields.map(({ key, label, placeholder, required, colSpan }) => (
-          <div key={key} className={colSpan ? "sm:col-span-2" : ""}>
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
-              {label}
-              {required && <span className="ml-0.5 text-destructive">*</span>}
-            </label>
-            <input
-              value={value[key]}
-              onChange={set(key)}
-              placeholder={placeholder}
-              className={cn(
-                "h-10 w-full rounded-xl border bg-background px-3 text-sm outline-none transition-colors focus:border-primary",
-                errors[key] ? "border-destructive" : "border-border",
-              )}
-            />
-            {errors[key] && (
-              <p className="mt-1 text-[11px] text-destructive">{errors[key]}</p>
-            )}
-          </div>
-        ))}
-      </div>
-      <button
-        onClick={() => validate() && onNext()}
-        className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
-      >
-        Tiếp tục
-      </button>
-    </div>
-  );
-}
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function AddressStep({ value, onChange, onNext }: Props) {
+  const latestValueRef = useRef(value);
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showSaved, setShowSaved] = useState(false);
   const [useManual, setUseManual] = useState(false);
+
+  useEffect(() => {
+    latestValueRef.current = value;
+  }, [value]);
 
   useEffect(() => {
     userApi
@@ -133,10 +45,11 @@ export function AddressStep({ value, onChange, onNext }: Props) {
           setSelectedId(defaultAddr._id);
           // Giữ name/phone từ value (đã prefill từ user profile ở CheckoutPage)
           onChange({
-            ...value,
-            street: defaultAddr.street,
-            district: defaultAddr.district ?? "",
-            city: defaultAddr.city,
+            ...latestValueRef.current,
+            street: latestValueRef.current.street || defaultAddr.street,
+            district:
+              latestValueRef.current.district || defaultAddr.district || "",
+            city: latestValueRef.current.city || defaultAddr.city,
           });
         }
       })
