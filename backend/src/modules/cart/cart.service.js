@@ -16,7 +16,7 @@ const addToCart = async (userId, { productId, quantity = 1 }) => {
 
   const price = product.discountPrice ?? product.price;
 
-  // Dùng findOneAndUpdate trực tiếp — upsert + add item trong 1 query
+
   const existingCart = await Cart.findOne({ user: userId });
 
   let cart;

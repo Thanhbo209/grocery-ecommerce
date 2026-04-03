@@ -1,7 +1,9 @@
 // Helpers
 
 import type { SORT_OPTIONS } from "@/constants/shop-page";
+import type { Address, UserProfile } from "@/types/auth";
 import type { Category } from "@/types/category";
+import type { ShippingAddress } from "@/types/check-out";
 import type {
   PaginatedResponse,
   Product,
@@ -118,12 +120,9 @@ export function normalizeListResponse(
     const arr = raw.data ?? raw.products ?? [];
     rawItems = Array.isArray(arr) ? arr : [];
 
-    // Backend hiện tại bọc pagination trong object "pagination"
-    // { data: [...], pagination: { total, page, limit, totalPages } }
     const pag = raw.pagination;
     total = pag?.total ?? raw.total ?? rawItems.length;
     page = pag?.page ?? raw.page ?? filters.page;
-    // backend dùng "limit", không phải "pageSize"
     pageSize =
       pag?.limit ??
       pag?.pageSize ??
@@ -157,24 +156,19 @@ export function normalizeListResponse(
 export function buildProductQuery(filters: ProductFilters): string {
   const params = new URLSearchParams({
     page: String(filters.page),
-    // backend đọc "limit" — không phải "pageSize"
+
     limit: String(filters.pageSize),
   });
 
   if (filters.search.trim()) params.set("search", filters.search.trim());
 
-  // category: ObjectId string
   if (filters.category) params.set("category", filters.category);
 
-  // isActive: backend service mặc định filter { isActive: true } cho public
-  // Admin cần truyền isActive=false để xem sản phẩm ẩn
   if (filters.isActive !== "") params.set("isActive", String(filters.isActive));
 
-  // isFeatured
   if (filters.isFeatured !== "")
     params.set("isFeatured", String(filters.isFeatured));
 
-  // sort — backend nhận format: price_asc | price_desc | rating | newest(default)
   if (filters.sortField === "price" && filters.sortOrder === "asc")
     params.set("sort", "price_asc");
   else if (filters.sortField === "price" && filters.sortOrder === "desc")
@@ -189,16 +183,6 @@ export function buildProductQuery(filters: ProductFilters): string {
 }
 
 // CheckOutPage Helpers
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface ShippingAddress {
-  label?: string;
-  name: string;
-  phone: string;
-  street: string;
-  district: string;
-  city: string;
-}
 
 export function getStoredAddresses(): ShippingAddress[] {
   try {
@@ -210,3 +194,33 @@ export function getStoredAddresses(): ShippingAddress[] {
     return [];
   }
 }
+
+// Checkout Helpers
+export function mapProfileToShipping(p: UserProfile): ShippingAddress {
+  const def =
+    p.addresses?.find((a: Address) => a.isDefault) ?? p.addresses?.[0];
+
+  return {
+    name: p.name ?? "",
+    phone: p.phone ?? "",
+    street: def?.street ?? "",
+    district: def?.district ?? "",
+    city: def?.city ?? "",
+    label: def?.label,
+  };
+}
+
+export const validate = (
+  value: ShippingAddress,
+  setErrors: (errs: Partial<ShippingAddress>) => void,
+): boolean => {
+  const errs: Partial<ShippingAddress> = {};
+  if (!value.name.trim()) errs.name = "Vui lòng nhập họ tên";
+  if (!value.phone.trim()) errs.phone = "Vui lòng nhập số điện thoại";
+  else if (!/^(0|\+84)\d{9}$/.test(value.phone.trim()))
+    errs.phone = "Số điện thoại không hợp lệ";
+  if (!value.street.trim()) errs.street = "Vui lòng nhập địa chỉ";
+  if (!value.city.trim()) errs.city = "Vui lòng nhập thành phố";
+  setErrors(errs);
+  return Object.keys(errs).length === 0;
+};

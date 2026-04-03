@@ -9,7 +9,7 @@ export const SORT_OPTIONS = [
   { value: "rating", label: "Đánh giá cao" },
 ] as const;
 
-type SortValue = (typeof SORT_OPTIONS)[number]["value"];
+
 
 export const PRICE_RANGES = [
   { label: "Dưới 50.000₫", min: 0, max: 50000 },
