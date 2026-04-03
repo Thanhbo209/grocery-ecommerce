@@ -3,14 +3,7 @@ import { MapPin, Plus, ChevronDown } from "lucide-react";
 import { userApi } from "@/api/userApi";
 import { cn } from "@/lib/utils";
 import type { Address } from "@/types/auth";
-
-interface ShippingAddress {
-  name: string;
-  phone: string;
-  street: string;
-  district: string;
-  city: string;
-}
+import type { ShippingAddress } from "@/types/check-out";
 
 interface Props {
   value: ShippingAddress;

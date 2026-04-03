@@ -19,6 +19,7 @@ export function CategoryStrip({ categories }: { categories: Category[] }) {
     { _id: "", name: "Tất Cả", slug: "" },
     ...categories,
   ];
+  
 
   return (
     <div className="border-b border-border/50 bg-background">

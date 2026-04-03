@@ -5,7 +5,7 @@ import { authMiddleware } from "../../middlewares/auth.middleware.js"; // ← đ
 
 const router = Router();
 
-router.use(authMiddleware); // ← đổi tên dùng
+router.use(authMiddleware);
 
 router.get("/", cartController.getCart);
 router.post("/", cartController.addToCart);
