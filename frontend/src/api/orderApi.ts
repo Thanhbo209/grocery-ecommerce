@@ -1,6 +1,6 @@
 import { request } from "@/lib/request";
-import type { PaymentMethod } from "@/types/check-out";
-import type { Order, OrderStatus, ShippingAddress } from "@/types/order";
+import type { PaymentMethod, ShippingAddress } from "@/types/check-out";
+import type { Order, OrderStatus } from "@/types/order";
 
 export interface OrdersResponse {
   orders: Order[];
