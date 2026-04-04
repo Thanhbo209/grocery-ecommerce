@@ -16,8 +16,6 @@ import { formatPrice, formatDate, UNIT_LABEL } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Order, OrderStatus } from "@/types/order";
 
-// ─── Status config (shared với OrderCard) ────────────────────────────────────
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const STATUS_CONFIG: Record<
   OrderStatus,
@@ -101,7 +99,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
                 <div
                   className={cn(
                     "h-0.5 flex-1 transition-colors",
-                    i <= currentIdx ? "bg-emerald-500" : "bg-border",
+                    i <= currentIdx ? "bg-primary" : "bg-border",
                   )}
                 />
               )}
@@ -109,9 +107,9 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
                 className={cn(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-all",
                   active
-                    ? "border-emerald-500 bg-emerald-500 text-white"
+                    ? "border-primary bg-primary text-white"
                     : done
-                      ? "border-emerald-500 bg-emerald-100 text-emerald-700"
+                      ? "border-primary bg-emerald-100 text-emerald-700"
                       : "border-border bg-background text-muted-foreground",
                 )}
               >
@@ -121,7 +119,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
                 <div
                   className={cn(
                     "h-0.5 flex-1 transition-colors",
-                    i < currentIdx ? "bg-emerald-500" : "bg-border",
+                    i < currentIdx ? "bg-primary" : "bg-border",
                   )}
                 />
               )}
@@ -171,7 +169,14 @@ export function OrderDetailDrawer({
     }
   };
 
-  const addr = order.shippingAddress;
+  const addr = order.shippingAddress ?? {
+    name: "",
+    phone: "",
+    street: "",
+    district: "",
+    city: "",
+  };
+
   const canCancel = order.status === "pending";
 
   return (

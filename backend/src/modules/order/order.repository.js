@@ -9,10 +9,20 @@ const findByUser = (userId, { page = 1, limit = 10, status } = {}) => {
   return Order.find(filter)
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
-    .limit(limit)
-    .select(
-      "orderCode status totalAmount paymentMethod paymentStatus createdAt items",
-    );
+    .limit(limit).select(`
+      orderCode
+      status
+      totalAmount
+      paymentMethod
+      paymentStatus
+      createdAt
+      items
+      shippingAddress
+      subtotal
+      shippingFee
+      discount
+      updatedAt
+    `);
 };
 
 const countByUser = (userId, status) => {

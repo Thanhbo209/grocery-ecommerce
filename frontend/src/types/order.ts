@@ -1,4 +1,4 @@
-import type { PaymentMethod } from "@/types/check-out";
+import type { PaymentMethod, ShippingAddress } from "@/types/check-out";
 
 export interface OrderItem {
   productId: string;
@@ -7,14 +7,6 @@ export interface OrderItem {
   price: number;
   unit: string;
   quantity: number;
-}
-
-export interface ShippingAddress {
-  name: string;
-  phone: string;
-  street: string;
-  district?: string;
-  city: string;
 }
 
 export type OrderStatus =
@@ -34,7 +26,7 @@ export interface Order {
   shippingFee: number;
   discount: number;
   totalAmount: number;
-  shippingAddress: ShippingAddress;
+  shippingAddress?: ShippingAddress;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
   status: OrderStatus;

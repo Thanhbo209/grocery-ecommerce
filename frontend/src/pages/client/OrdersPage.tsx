@@ -42,6 +42,7 @@ export default function OrdersPage() {
         };
         setOrders(data.orders);
         setPagination(data.pagination);
+        console.log("ORDER DATA:", data.orders);
       } catch {
         toast.error("Không thể tải đơn hàng");
       } finally {
