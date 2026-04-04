@@ -30,7 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCategories } from "@/hooks/useCategories";
 import { useCategoryMutation } from "@/hooks/useCategoryMutation";
-import type { Category } from "@/types/product";
+import type { Category } from "@/types/category";
 
 // ─── Form modal (dùng cho cả create lẫn edit) ─────────────────────────────────
 

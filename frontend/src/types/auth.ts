@@ -14,6 +14,12 @@ export interface AuthContextType {
   logout: () => void;
 }
 
+export interface LoginFormValues {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 export interface Address {
   _id: string;
   label?: string;

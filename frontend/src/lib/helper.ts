@@ -4,6 +4,7 @@ import type { SORT_OPTIONS } from "@/constants/shop-page";
 import type { Address, UserProfile } from "@/types/auth";
 import type { Category } from "@/types/category";
 import type { ShippingAddress } from "@/types/check-out";
+import type { OrderStatus } from "@/types/order";
 import type {
   PaginatedResponse,
   Product,
@@ -224,3 +225,14 @@ export const validate = (
   setErrors(errs);
   return Object.keys(errs).length === 0;
 };
+
+// OrdersPage Helpers
+
+export const STATUS_TABS: { value: OrderStatus | ""; label: string }[] = [
+  { value: "", label: "Tất cả" },
+  { value: "pending", label: "Chờ xác nhận" },
+  { value: "confirmed", label: "Đã xác nhận" },
+  { value: "shipping", label: "Đang giao" },
+  { value: "delivered", label: "Đã giao" },
+  { value: "cancelled", label: "Đã hủy" },
+];

@@ -39,6 +39,14 @@ export interface Product {
   updatedAt: string;
 }
 
+export interface ProductBadge {
+  emoji: string;
+  name: string;
+  price: string;
+  className: string;
+  animationDelay: string;
+}
+
 // ─── 5. API Payloads ──────────────────────────────────────────────────────────
 
 export interface CreateProductPayload {

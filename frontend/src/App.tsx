@@ -15,6 +15,7 @@ import UserRoute from "@/context/UserRoute";
 import CartPage from "@/pages/client/CartPage";
 import CheckoutPage from "@/pages/client/CheckOutPage";
 import ProfilePage from "@/pages/client/ProfilePage";
+import OrdersPage from "@/pages/client/OrdersPage";
 
 function App() {
   return (
@@ -22,31 +23,15 @@ function App() {
       <Toaster richColors position="top-right" />
       <Routes>
         {/* User Route */}
-        <Route
-          path="/cart"
-          element={
-            <UserRoute>
-              <CartPage />
-            </UserRoute>
-          }
-        />
+        <Route element={<UserRoute />}>
+          <Route element={<ClientLayout />}>
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+          </Route>
+        </Route>
 
-        <Route
-          path="/checkout"
-          element={
-            <UserRoute>
-              <CheckoutPage />
-            </UserRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <UserRoute>
-              <ProfilePage />
-            </UserRoute>
-          }
-        />
         {/* PUBLIC ROUTES */}
         <Route element={<ClientLayout />}>
           <Route path="/" element={<HomePage />} />

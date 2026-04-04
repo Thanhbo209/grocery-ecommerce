@@ -1,33 +1,43 @@
 import { request } from "@/lib/request";
+import type { PaymentMethod } from "@/types/check-out";
+import type { Order, OrderStatus, ShippingAddress } from "@/types/order";
+
+export interface OrdersResponse {
+  orders: Order[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
 
 export const orderApi = {
-  createOrder: (body: {
-    shippingAddress: {
-      name: string;
-      phone: string;
-      street: string;
-      district?: string;
-      city: string;
-    };
-    paymentMethod: "COD" | "online";
-    note?: string;
-  }) => request("/api/orders", { method: "POST", body: JSON.stringify(body) }),
-
   getMyOrders: (params?: {
     page?: number;
     limit?: number;
-    status?: string;
+    status?: OrderStatus | "";
   }) => {
     const qs = new URLSearchParams(
-      Object.entries(params ?? {}).flatMap(([key, value]) =>
-        value === undefined ? [] : [[key, String(value)]],
-      ),
+      Object.entries(params ?? {})
+        .filter(([, v]) => v !== undefined && v !== "")
+        .map(([k, v]) => [k, String(v)]),
     ).toString();
-    return request(`/api/orders${qs ? `?${qs}` : ""}`);
+    return request<OrdersResponse>(`/api/orders${qs ? `?${qs}` : ""}`);
   },
 
-  getOrderById: (id: string) => request(`/api/orders/${id}`),
+  getById: (id: string) => request<Order>(`/api/orders/${id}`),
 
   cancelOrder: (id: string) =>
-    request(`/api/orders/${id}/cancel`, { method: "PATCH" }),
+    request<Order>(`/api/orders/${id}/cancel`, { method: "PATCH" }),
+
+  createOrder: (body: {
+    shippingAddress: ShippingAddress;
+    paymentMethod: PaymentMethod;
+    note?: string;
+  }) =>
+    request<Order>("/api/orders", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 };
