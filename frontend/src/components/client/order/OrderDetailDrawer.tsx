@@ -169,13 +169,11 @@ export function OrderDetailDrawer({
     }
   };
 
-  const addr = order.shippingAddress ?? {
-    name: "",
-    phone: "",
-    street: "",
-    district: "",
-    city: "",
-  };
+  const addr = order.shippingAddress;
+  const recipient = [addr?.name, addr?.phone].filter(Boolean).join(" · ");
+  const fullAddress = [addr?.street, addr?.district, addr?.city]
+    .filter(Boolean)
+    .join(", ");
 
   const canCancel = order.status === "pending";
 
@@ -224,12 +222,10 @@ export function OrderDetailDrawer({
               <span className="text-sm font-semibold">Địa chỉ giao hàng</span>
             </div>
             <p className="text-sm font-medium">
-              {addr.name} · {addr.phone}
+              {recipient || "Chưa có thông tin người nhận"}
             </p>
             <p className="text-sm text-muted-foreground">
-              {[addr.street, addr.district, addr.city]
-                .filter(Boolean)
-                .join(", ")}
+              {fullAddress || "Chưa có địa chỉ giao hàng"}
             </p>
           </div>
 
