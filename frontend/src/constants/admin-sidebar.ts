@@ -24,7 +24,7 @@ export const ADMIN_NAVITEMS = [
   {
     label: "Đơn Hàng",
     icon: ScrollText,
-    href: "#",
+    href: "/admin/orders",
     badge: "3",
     badgeWarning: true,
   },
