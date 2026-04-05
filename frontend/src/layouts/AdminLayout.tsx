@@ -8,7 +8,7 @@ const pageTitles = {
   "/": "Dashboard",
   "/admin/dashboard": "Dashboard",
   "/admin/products": "Sản Phẩm",
-  "/admin/cong-thuc": "Công Thức",
+  "/admin/orders": "Đơn Hàng",
   "/admin/nguyen-lieu": "Nguyên Liệu",
   "/admin/nguoi-dung": "Người Dùng",
   "/admin/bao-cao": "Báo Cáo",

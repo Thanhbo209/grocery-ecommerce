@@ -292,8 +292,8 @@ function OrderDetailPanel({
                 Khách hàng
               </p>
             </div>
-            <p className="text-sm font-medium">{addr.name}</p>
-            <p className="text-sm text-muted-foreground">{addr.phone}</p>
+            <p className="text-sm font-medium">{addr.name ?? "—"}</p>
+            <p className="text-sm text-muted-foreground">{addr.phone ?? "—"}</p>
           </div>
 
           {/* Shipping address */}
@@ -722,32 +722,30 @@ export default function AdminOrdersPage() {
               <ChevronLeft size={14} />
             </button>
             {/* Page numbers */}
-            {Array.from(
-              { length: Math.min(5, pagination.totalPages) },
-              (_, i) => {
-                const p = Math.max(
-                  1,
-                  Math.min(
-                    pagination.page - 2 + i,
-                    pagination.totalPages - 4 + i,
-                  ),
-                );
-                return (
-                  <button
-                    key={p}
-                    onClick={() => fetchOrders(p)}
-                    className={cn(
-                      "flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium transition-colors",
-                      pagination.page === p
-                        ? "bg-primary text-white"
-                        : "border border-border hover:bg-muted",
-                    )}
-                  >
-                    {p}
-                  </button>
-                );
-              },
-            )}
+            {(() => {
+              const start = Math.max(
+                1,
+                Math.min(pagination.page - 2, pagination.totalPages - 4),
+              );
+              const end = Math.min(pagination.totalPages, start + 4);
+              return Array.from(
+                { length: end - start + 1 },
+                (_, i) => start + i,
+              ).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => fetchOrders(p)}
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium transition-colors",
+                    pagination.page === p
+                      ? "bg-primary text-white"
+                      : "border border-border hover:bg-muted",
+                  )}
+                >
+                  {p}
+                </button>
+              ));
+            })()}
             <button
               onClick={() => fetchOrders(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages}
