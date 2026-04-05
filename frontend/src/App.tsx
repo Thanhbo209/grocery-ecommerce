@@ -7,7 +7,6 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import AdminLayout from "@/layouts/AdminLayout";
 import DashboardPage from "@/pages/admin/Dashboard";
-import ProductsPage from "@/pages/admin/ProductsPage";
 import ProductDetailPage from "@/pages/client/ProductDetailPage";
 import ShopPage from "@/pages/client/ShopPage";
 import CategoryPage from "@/pages/client/CategoryPage";
@@ -16,6 +15,8 @@ import CartPage from "@/pages/client/CartPage";
 import CheckoutPage from "@/pages/client/CheckOutPage";
 import ProfilePage from "@/pages/client/ProfilePage";
 import OrdersPage from "@/pages/client/OrdersPage";
+import ProductsPage from "@/pages/admin/AdminProductsPage";
+import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         >
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="products" element={<ProductsPage />} />
+          <Route path="orders" element={<AdminOrdersPage />} />
         </Route>
       </Routes>
     </>

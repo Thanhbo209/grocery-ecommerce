@@ -41,3 +41,27 @@ export const orderApi = {
       body: JSON.stringify(body),
     }),
 };
+
+export const adminOrderApi = {
+  getAll: (params?: {
+    page?: number;
+    limit?: number;
+    status?: OrderStatus | "";
+    search?: string;
+  }) => {
+    const qs = new URLSearchParams(
+      Object.entries(params ?? {})
+        .filter(([, v]) => v !== undefined && v !== "")
+        .map(([k, v]) => [k, String(v)]),
+    ).toString();
+    return request<OrdersResponse>(
+      `/api/orders/admin/all${qs ? `?${qs}` : ""}`,
+    );
+  },
+
+  updateStatus: (id: string, status: OrderStatus) =>
+    request<Order>(`/api/orders/admin/${id}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
+};
