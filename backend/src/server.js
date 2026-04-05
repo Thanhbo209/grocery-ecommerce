@@ -12,6 +12,7 @@ import orderRoute from "./modules/order/order.route.js";
 import categoryRoutes from "./modules/category/category.route.js";
 import productRoutes from "./modules/product/product.routes.js";
 import userRoute from "./modules/user/user.route.js";
+import adminRoute from "./modules/admin/admin.user.route.js";
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 dns.setDefaultResultOrder("ipv4first");
@@ -36,7 +37,7 @@ app.use(
 );
 
 // routes
-
+app.use("/api/admin/users", adminRoute);
 app.use("/api/auth", createAuthRouter(authController));
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);

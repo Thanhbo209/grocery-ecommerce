@@ -17,6 +17,7 @@ import ProfilePage from "@/pages/client/ProfilePage";
 import OrdersPage from "@/pages/client/OrdersPage";
 import ProductsPage from "@/pages/admin/AdminProductsPage";
 import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
+import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
         </Route>
       </Routes>
     </>
