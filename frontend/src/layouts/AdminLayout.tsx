@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "@/components/admin/Sidebar";
 import Navbar from "@/components/admin/Navbar";
+import { useAuth } from "@/hooks/useAuth";
 
 // Map pathname → page title
 const pageTitles = {
@@ -17,10 +18,15 @@ const pageTitles = {
 
 export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+  };
   const [mobileOpen, setMobileOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   const location = useLocation();
+
   const pageTitle =
     pageTitles[location.pathname as keyof typeof pageTitles] ?? "Admin";
 
@@ -47,6 +53,9 @@ export default function AdminLayout() {
             onToggleSidebar={() => setCollapsed((c) => !c)}
             onToggleMobile={() => setMobileOpen((o) => !o)}
             darkMode={darkMode}
+            onLogout={() => {
+              handleLogout();
+            }}
             onToggleDark={() => setDarkMode((d) => !d)}
             pageTitle={pageTitle}
           />

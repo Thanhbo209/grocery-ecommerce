@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const notifications = [
   {
@@ -50,6 +51,7 @@ function useOutsideClick(
 interface NavbarProps {
   collapsed: boolean;
   onToggleSidebar: () => void;
+  onLogout: () => void;
   onToggleMobile: () => void;
   onToggleDark: () => void;
   pageTitle: string;
@@ -59,6 +61,7 @@ interface NavbarProps {
 export default function Navbar({
   onToggleSidebar,
   onToggleMobile,
+  onLogout,
   darkMode,
   onToggleDark,
   pageTitle = "Dashboard",
@@ -230,10 +233,16 @@ export default function Navbar({
                 </a>
               </div>
               <div className="p-1.5">
-                <button className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-destructive hover:bg-destructive/10  rounded-xl transition-colors">
+                <Button
+                  variant="destructive"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm  rounded-md"
+                  onClick={() => {
+                    onLogout();
+                  }}
+                >
                   <LogOut size={15} />
                   Đăng xuất
-                </button>
+                </Button>
               </div>
             </div>
           )}

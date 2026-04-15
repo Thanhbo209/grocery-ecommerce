@@ -18,6 +18,8 @@ import OrdersPage from "@/pages/client/OrdersPage";
 import ProductsPage from "@/pages/admin/AdminProductsPage";
 import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
 import AdminUsersPage from "@/pages/admin/AdminUsersPage";
+import AdminPaymentPage from "@/pages/admin/AdminPaymentPage";
+import PaymentPage from "@/pages/client/PaymentPage";
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/payment/:orderId" element={<PaymentPage />} />
           </Route>
         </Route>
 
@@ -57,6 +60,7 @@ function App() {
           <Route path="products" element={<ProductsPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="/admin/payments" element={<AdminPaymentPage />} />
         </Route>
       </Routes>
     </>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, Search, ShoppingCart, X } from "lucide-react";
+import { LayoutDashboard, Menu, Search, ShoppingCart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/green-logo.png";
 import { CategoryStrip } from "@/components/client/navbar/CategoryStrip";
@@ -10,6 +10,7 @@ import type { Category } from "@/types/category";
 import { useAuth } from "@/hooks/useAuth";
 import { UserDropdown } from "@/components/client/navbar/UserDropdown";
 import { SearchForm } from "@/components/client/navbar/SearchForm";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -87,21 +88,42 @@ export default function Navbar() {
               </button>
 
               {/* Cart */}
-              <Link
-                to="/cart"
-                className="relative flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
-              >
-                <ShoppingCart size={19} />
-                {totalItems > 0 && (
-                  <span className="absolute -right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
-                    {totalItems > 99 ? "99+" : totalItems}
-                  </span>
-                )}
-              </Link>
+              {user?.role === "user" ? (
+                <Link
+                  to="/cart"
+                  className="relative flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
+                >
+                  <ShoppingCart size={19} />
+                  {totalItems > 0 && (
+                    <span className="absolute -right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
+                      {totalItems > 99 ? "99+" : totalItems}
+                    </span>
+                  )}
+                </Link>
+              ) : null}
 
               {/* Auth */}
-              {user ? (
+              {user?.role === "user" ? (
                 <UserDropdown user={user} logout={logout} />
+              ) : user?.role === "admin" ? (
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm">
+                    <Link
+                      to="/admin/dashboard"
+                      className="flex items-center gap-1"
+                    >
+                      <LayoutDashboard size={16} className="mr-1" /> Dashboard
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={logout}
+                    className="ml-2"
+                  >
+                    Đăng xuất
+                  </Button>
+                </div>
               ) : (
                 <div className="hidden items-center gap-2 sm:flex">
                   <Link

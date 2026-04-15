@@ -61,17 +61,21 @@ export function UserDropdown({
           <nav className="py-1.5">
             {[
               { to: "/profile", icon: <User size={14} />, label: "Tài khoản" },
-              {
-                to: "/orders",
-                icon: <Package size={14} />,
-                label: "Đơn hàng của tôi",
-              },
+              ...(user.role === "user"
+                ? [
+                    {
+                      to: "/orders",
+                      icon: <Package size={14} />,
+                      label: "Đơn hàng của tôi",
+                    },
+                  ]
+                : []),
               ...(user.role === "admin"
                 ? [
                     {
                       to: "/admin/dashboard",
                       icon: <LayoutDashboard size={14} />,
-                      label: "Quản trị",
+                      label: "Dashboard",
                     },
                   ]
                 : []),
