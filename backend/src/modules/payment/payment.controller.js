@@ -65,11 +65,11 @@ const getPaymentInfo = async (req, res) => {
 
 // GET /api/admin/payment/pending
 // Lấy danh sách đơn hàng online chưa thanh toán
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const getPendingPayments = async (req, res) => {
   try {
     const { page = 1, limit = 15, search = "" } = req.query;
     const skip = (Number(page) - 1) * Number(limit);
-
     const filter = {
       paymentMethod: "online",
       paymentStatus: "unpaid",
@@ -77,10 +77,11 @@ const getPendingPayments = async (req, res) => {
     };
 
     if (search) {
+      const q = escapeRegex(String(search));
       filter.$or = [
-        { orderCode: { $regex: search, $options: "i" } },
-        { "shippingAddress.name": { $regex: search, $options: "i" } },
-        { "shippingAddress.phone": { $regex: search, $options: "i" } },
+        { orderCode: { $regex: q, $options: "i" } },
+        { "shippingAddress.name": { $regex: q, $options: "i" } },
+        { "shippingAddress.phone": { $regex: q, $options: "i" } },
       ];
     }
 

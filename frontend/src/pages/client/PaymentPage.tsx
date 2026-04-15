@@ -125,6 +125,7 @@ export default function PaymentPage() {
       )) as unknown as PaymentInfo;
       setInfo(data);
       setError("");
+      return data;
     } catch (err: unknown) {
       if (!silent)
         setError(
@@ -132,6 +133,7 @@ export default function PaymentPage() {
             ? err.message
             : "Không thể tải thông tin thanh toán",
         );
+      return null;
     } finally {
       if (!silent) setLoading(false);
     }
@@ -149,9 +151,9 @@ export default function PaymentPage() {
 
   const handleManualCheck = async () => {
     setChecking(true);
-    await fetchInfo(true);
+    const data = await fetchInfo(true);
     setChecking(false);
-    if (info?.order.paymentStatus !== "paid") {
+    if (data && data.order.paymentStatus !== "paid") {
       toast.info(
         "Chưa ghi nhận thanh toán — admin sẽ xác nhận sau khi kiểm tra",
       );

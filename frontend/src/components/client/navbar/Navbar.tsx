@@ -107,11 +107,8 @@ export default function Navbar() {
                 <UserDropdown user={user} logout={logout} />
               ) : user?.role === "admin" ? (
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    <Link
-                      to="/admin/dashboard"
-                      className="flex items-center gap-1"
-                    >
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/admin/dashboard">
                       <LayoutDashboard size={16} className="mr-1" /> Dashboard
                     </Link>
                   </Button>

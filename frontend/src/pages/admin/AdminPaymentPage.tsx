@@ -101,18 +101,24 @@ function QRDialog({
 
   const handleConfirm = async () => {
     setConfirmingId(order._id);
-    await onConfirm(order._id);
-    setConfirmingId("");
-    onClose();
+    try {
+      await onConfirm(order._id);
+      onClose();
+    } finally {
+      setConfirmingId("");
+    }
   };
 
   const handleReject = async () => {
     setConfirmingId(order._id);
-    await onReject(order._id, rejectReason);
-    setConfirmingId("");
-    setShowRejectInput(false);
-    setRejectReason("");
-    onClose();
+    try {
+      await onReject(order._id, rejectReason);
+      setShowRejectInput(false);
+      setRejectReason("");
+      onClose();
+    } finally {
+      setConfirmingId("");
+    }
   };
 
   return (

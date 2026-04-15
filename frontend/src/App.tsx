@@ -60,7 +60,7 @@ function App() {
           <Route path="products" element={<ProductsPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="users" element={<AdminUsersPage />} />
-          <Route path="/admin/payments" element={<AdminPaymentPage />} />
+          <Route path="payments" element={<AdminPaymentPage />} />{" "}
         </Route>
       </Routes>
     </>
