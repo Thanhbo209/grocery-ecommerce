@@ -7,12 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Category, Product } from "@/types/product";
+import type { Product } from "@/types/product";
 import {
   formValuesToPayload,
   ProductForm,
   type ProductFormValues,
 } from "@/components/admin/products/ProductForm";
+import type { Category } from "@/types/category";
 
 const FORM_ID = "edit-product-form";
 

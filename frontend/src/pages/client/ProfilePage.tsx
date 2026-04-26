@@ -21,11 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getProvinces, getDistricts } from "vietnam-provinces";
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Tab = "info" | "addresses" | "password";
-
-// ─── Address Form Modal ───────────────────────────────────────────────────────
+type AddressErrors = Partial<Record<keyof AddressPayload, string>>;
 
 function AddressModal({
   initial,
@@ -57,7 +55,7 @@ function AddressModal({
     isDefault: initial?.isDefault ?? false,
   });
 
-  const [errors, setErrors] = useState<Partial<AddressPayload>>({});
+  const [errors, setErrors] = useState<AddressErrors>({});
 
   // ─── INIT EDIT MODE (QUAN TRỌNG) ───────────────
   useEffect(() => {

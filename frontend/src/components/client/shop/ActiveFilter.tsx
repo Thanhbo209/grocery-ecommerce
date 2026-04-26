@@ -1,6 +1,6 @@
 import { PRICE_RANGES, SORT_OPTIONS } from "@/constants/shop-page";
+import type { Category } from "@/types/category";
 import type { FilterState } from "@/types/filter";
-import type { Category } from "@/types/product";
 import { X } from "lucide-react";
 
 export function ActiveFilterBadges({

@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { PRICE_RANGES, SORT_OPTIONS } from "@/constants/shop-page";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import type { Category } from "@/types/category";
 import type { FilterState } from "@/types/filter";
-import type { Category } from "@/types/product";
 import { ChevronDown, RotateCcw, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
 

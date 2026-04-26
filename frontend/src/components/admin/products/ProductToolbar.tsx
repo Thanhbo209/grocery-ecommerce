@@ -8,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Category, ProductFilters } from "@/types/product";
+import type { ProductFilters } from "@/types/product";
+import type { Category } from "@/types/category";
 
 interface ProductToolbarProps {
   filters: ProductFilters;

@@ -14,11 +14,11 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import type {
-  Category,
   CreateProductPayload,
   Product,
   ProductUnit,
 } from "@/types/product";
+import type { Category } from "@/types/category";
 
 // ─── Enum options matching productSchema.unit ─────────────────────────────────
 
@@ -69,6 +69,7 @@ function toFormValues(product?: Product): ProductFormValues {
 }
 
 /** Converts validated form values to the exact POST /products body shape. */
+// eslint-disable-next-line react-refresh/only-export-components
 export function formValuesToPayload(
   v: ProductFormValues,
 ): CreateProductPayload {

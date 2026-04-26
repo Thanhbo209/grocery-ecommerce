@@ -408,11 +408,13 @@ function DeleteConfirm({
   onClose,
   onConfirm,
   user,
+  loading,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
   user: AdminUser | null;
+  loading: boolean;
 }) {
   return (
     <AlertDialog open={open} onOpenChange={(o) => !o && onClose()}>
@@ -431,7 +433,7 @@ function DeleteConfirm({
             onClick={onConfirm}
             className="bg-destructive text-white hover:bg-destructive/90"
           >
-            Xóa tài khoản
+            {loading ? "Đang xoá..." : "Xóa tài khoản"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -485,7 +487,6 @@ export default function AdminUsersPage() {
   const [editUser, setEditUser] = useState<AdminUser | undefined>(undefined);
   const [resetPassUser, setResetPassUser] = useState<AdminUser | null>(null);
   const [deleteUser, setDeleteUser] = useState<AdminUser | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deleting, setDeleting] = useState(false);
 
   const fetchUsers = useCallback(
@@ -937,6 +938,7 @@ export default function AdminUsersPage() {
         onClose={() => setDeleteUser(null)}
         onConfirm={handleDelete}
         user={deleteUser}
+        loading={deleting}
       />
     </div>
   );
