@@ -21,6 +21,9 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const connectionString = process.env.MONGO_URI;
+if (!process.env.MONGO_URI) {
+  throw new Error("MONGO_URI is missing");
+}
 const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const app = express();
@@ -30,14 +33,25 @@ const userRepo = new UserRepository();
 const authService = new AuthService(userRepo);
 const authController = new AuthController(authService);
 
+const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"];
+
 app.use(
   cors({
-    origin: FRONTEND_URL,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
-
 // routes
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+
 app.use("/api/admin/users", adminRoute);
 app.use("/api/auth", createAuthRouter(authController));
 app.use("/api/categories", categoryRoutes);
@@ -48,10 +62,23 @@ app.use("/api/users", userRoute);
 app.use("/api/payment", paymentRoute);
 // start server
 const startServer = async () => {
-  await connectDB(connectionString);
-  app.listen(PORT, () => {
-    console.log(`Server running on PORT ${PORT}`);
-  });
+  try {
+    await connectDB(connectionString);
+    app.listen(PORT, () => {
+      console.log(`Server running on PORT ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
 };
+
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
 
 startServer();
