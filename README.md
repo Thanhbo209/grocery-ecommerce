@@ -7,6 +7,20 @@
   <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square">
 </p>
 
+##  Demo Accounts
+
+To quickly explore the system without registration, you can use the following test accounts:
+
+###  Admin Account
+- **Email:** admin@food.vn  
+- **Password:** password  
+- **Access:** Admin Dashboard (manage products, orders, users)
+
+###  User Account
+- **Email:** test@gmail.com  
+- **Password:** 123456  
+- **Access:** Customer features (browse, cart, order)
+
 ---
 ### Database Strategy
 
