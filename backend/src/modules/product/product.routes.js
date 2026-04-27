@@ -10,6 +10,7 @@ const router = express.Router();
 // PUBLIC
 router.get("/", productController.getAll);
 router.get("/stats", productController.getStats);
+router.get("/count", productController.countProducts);
 router.get("/:id", productController.getById);
 
 // ADMIN

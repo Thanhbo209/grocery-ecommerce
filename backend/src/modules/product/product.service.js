@@ -1,6 +1,7 @@
 // services/product.service.js
 import { productRepository } from "./product.repository.js";
 import Category from "../category/category.model.js";
+import productModel from "./product.model.js";
 
 export const productService = {
   async createProduct(data) {
@@ -16,6 +17,12 @@ export const productService = {
     }
 
     return productRepository.create(data);
+  },
+
+  // GET /api/products/count
+  // product.service.js
+  async countProducts(filter = {}) {
+    return await productRepository.count(filter);
   },
 
   // ─── Public: chỉ trả isActive:true ────────────────────────────────────────

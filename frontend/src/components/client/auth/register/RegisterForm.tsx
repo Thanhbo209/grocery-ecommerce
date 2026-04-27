@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { SocialLogin } from "@/components/client/auth/SocialLogin";
 import { PasswordInput } from "@/components/client/auth/PasswordInput";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -52,9 +51,15 @@ export function RegisterForm() {
       setTimeout(() => {
         window.location.href = "/login";
       }, 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Register Failed: ", error);
-      const message = error?.response?.data?.message || "Đăng ký thất bại";
+
+      let message = "Đăng ký thất bại";
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || message;
+      }
+
       toast.error(message);
     } finally {
       setLoading(false);
@@ -82,9 +87,6 @@ export function RegisterForm() {
           Đăng ký để tiếp tục mua sắm và theo dõi đơn hàng của bạn.
         </p>
       </div>
-
-      {/* Social buttons */}
-      <SocialLogin />
 
       {/* Divider */}
       <div className="my-5 flex items-center gap-3">

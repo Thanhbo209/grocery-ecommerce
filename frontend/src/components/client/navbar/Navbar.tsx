@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Menu, Search, ShoppingCart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Logo from "@/assets/green-logo.png";
 import { CategoryStrip } from "@/components/client/navbar/CategoryStrip";
 import { useCart } from "@/context/CartContext";
 import { categoryApi } from "@/api/categoryApi";
@@ -46,12 +45,12 @@ export default function Navbar() {
             <Link
               to="/"
               aria-label="GreenMart"
-              className="flex shrink-0 items-center gap-2 font-bold text-primary"
+              className="flex shrink-0 items-center font-extrabold"
             >
-              <span className="flex h-12 w-12 items-center justify-center p-1 rounded-full border-2 border-primary text-sm ">
-                <img src={Logo} alt="" className="object-cover" />
+              Green
+              <span className="hidden text-base sm:inline  text-primary">
+                Cart
               </span>
-              <span className="hidden text-base sm:inline">GreenMart</span>
             </Link>
 
             {/* Desktop nav links */}

@@ -12,6 +12,15 @@ export const productController = {
     }
   },
 
+  // product.controller.js
+  countProducts: async (req, res) => {
+    try {
+      const total = await productService.countProducts({ isActive: true });
+      res.json({ total });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
   // GET /api/products/stats — phải đăng ký TRƯỚC /:id trong routes
   getStats: async (req, res) => {
     try {

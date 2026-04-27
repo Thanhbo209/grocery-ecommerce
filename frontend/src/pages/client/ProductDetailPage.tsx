@@ -133,7 +133,7 @@ export default function ProductDetailPage() {
               </Link>
               {product.isFeatured && (
                 <Badge className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                  ⭐ Nổi bật
+                  Nổi bật
                 </Badge>
               )}
               {!inStock && (
@@ -237,12 +237,12 @@ export default function ProductDetailPage() {
                   className={cn(
                     "flex-1 rounded-xl font-semibold transition-all",
                     addedToCart
-                      ? "bg-emerald-700 text-white"
-                      : "bg-emerald-600 text-white hover:bg-emerald-700",
+                      ? "bg-accent "
+                      : "bg-primary  hover:bg-primary/80",
                   )}
                 >
                   <ShoppingCart size={17} className="mr-2" />
-                  {addedToCart ? "Đã thêm vào giỏ ✓" : "Thêm vào giỏ hàng"}
+                  {addedToCart ? "Đã thêm vào giỏ" : "Thêm vào giỏ hàng"}
                 </Button>
               </div>
             )}

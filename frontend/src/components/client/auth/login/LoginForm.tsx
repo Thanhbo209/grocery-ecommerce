@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import { SocialLogin } from "../SocialLogin";
 import { PasswordInput } from "../PasswordInput";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -44,11 +42,14 @@ export function LoginForm() {
       setTimeout(() => {
         window.location.href = "/";
       }, 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Login Failed: ", error);
 
-      const message =
-        error?.response?.data?.message || "Email hoặc mật khẩu không đúng";
+      let message = "Email hoặc mật khẩu không đúng";
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || message;
+      }
 
       toast.error(message);
     } finally {
@@ -76,18 +77,6 @@ export function LoginForm() {
         <p className="text-sm text-muted-foreground">
           Đăng nhập để tiếp tục mua sắm và theo dõi đơn hàng của bạn.
         </p>
-      </div>
-
-      {/* Social buttons */}
-      <SocialLogin />
-
-      {/* Divider */}
-      <div className="my-5 flex items-center gap-3">
-        <Separator className="flex-1" />
-        <span className="text-[11px] font-medium text-muted-foreground">
-          hoặc đăng nhập bằng email
-        </span>
-        <Separator className="flex-1" />
       </div>
 
       {/* Form */}

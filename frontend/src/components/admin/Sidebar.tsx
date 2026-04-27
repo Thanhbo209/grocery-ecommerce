@@ -94,12 +94,8 @@ export default function Sidebar({
                     <span className="flex-1 whitespace-nowrap truncate">
                       {item.label}
                     </span>
-                    {item.badge && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                        {item.badge}
-                      </span>
-                    )}
-                    {!item.badge && (
+
+                    {!item && (
                       <ChevronRight
                         size={14}
                         className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
@@ -112,7 +108,6 @@ export default function Sidebar({
                 {collapsed && (
                   <div className="absolute left-full ml-3 px-2.5 py-1.5 text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-lg">
                     {item.label}
-                    {item.badge && <span className="hidden">{item.badge}</span>}
                   </div>
                 )}
               </Link>
